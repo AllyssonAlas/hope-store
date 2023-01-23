@@ -17,3 +17,8 @@
 - Given some provided data is invalid
 - When a new registration is requested
 - Then the system shall send a invalid data error to the requester
+
+### 4. Scenario: Email already exists
+- Given provided valid data with an email that already exists
+- When a new registration is requested
+- Then the system shall send a unauthorized error to the requester
