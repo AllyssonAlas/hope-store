@@ -1,13 +1,21 @@
-import { mock } from 'jest-mock-extended';
+import { mock, MockProxy } from 'jest-mock-extended';
 
-import { setupCreateUser } from '@/domain/usecases';
+import { setupCreateUser, CreateUser } from '@/domain/usecases';
 import { LoadUserRepository } from '@/domain/contracts/repositories';
 
 describe('CreateUser', () => {
-  it('Should call LoadUserRepository with  correct input', async () => {
-    const loadUserRepository = mock<LoadUserRepository>();
-    const sut = setupCreateUser(loadUserRepository);
+  let loadUserRepository: MockProxy<LoadUserRepository>;
+  let sut: CreateUser;
 
+  beforeAll(() => {
+    loadUserRepository = mock();
+  });
+
+  beforeEach(() => {
+    sut = setupCreateUser(loadUserRepository);
+  });
+
+  it('Should call LoadUserRepository with correct input', async () => {
     await sut({
       name: 'any_user_name',
       email: 'any_user_email',
