@@ -12,6 +12,5 @@ export namespace LoadUserRepository {
     name: string,
     email: string,
     cpf: string,
-    password: string,
     role: string } | undefined;
 }
