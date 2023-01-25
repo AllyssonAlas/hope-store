@@ -3,7 +3,7 @@ import { mock, MockProxy } from 'jest-mock-extended';
 import { setupCreateUser, CreateUser } from '@/domain/usecases';
 import { LoadUserRepository, SaveUserRepository, LoadRoleRepository } from '@/domain/contracts/repositories';
 import { HasherGenerator } from '@/domain/contracts/gateways';
-import { UserAlreadyExistsError } from '@/domain/errors';
+import { UserAlreadyExistsError, NonexistentRoleError } from '@/domain/errors';
 
 describe('CreateUser', () => {
   let user: any;
@@ -24,6 +24,7 @@ describe('CreateUser', () => {
     userRepository = mock();
     roleRepository = mock();
     userRepository.load.mockResolvedValue(undefined);
+    roleRepository.load.mockResolvedValue({ id: 'any_role_id', name: 'any_role_name' });
     hasherGenerator.generate.mockResolvedValue({ ciphertext: 'any_hashed_password' });
   });
 
@@ -64,6 +65,14 @@ describe('CreateUser', () => {
 
     expect(roleRepository.load).toHaveBeenCalledWith({ name: 'any_user_role' });
     expect(roleRepository.load).toHaveBeenCalledTimes(1);
+  });
+
+  it('Should throw NonexistentRoleError if LoadRoleRepository returns undefined', async () => {
+    roleRepository.load.mockResolvedValueOnce(undefined);
+
+    const promise = sut(user);
+
+    await expect(promise).rejects.toThrow(new NonexistentRoleError());
   });
 
   it('Should call SaveUserRepository with correct input', async () => {
