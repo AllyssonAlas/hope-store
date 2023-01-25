@@ -1,14 +1,14 @@
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { setupCreateUser, CreateUser } from '@/domain/usecases';
-import { LoadUserRepository } from '@/domain/contracts/repositories';
+import { LoadUserRepository, SaveUserRepository } from '@/domain/contracts/repositories';
 import { HasherGenerator } from '@/domain/contracts/gateways';
 import { UserAlreadyExistsError } from '@/domain/errors';
 
 describe('CreateUser', () => {
   let user: any;
   let hasherGenerator: MockProxy<HasherGenerator>;
-  let loadUserRepository: MockProxy<LoadUserRepository>;
+  let userRepository: MockProxy<LoadUserRepository & SaveUserRepository>;
   let sut: CreateUser;
 
   beforeAll(() => {
@@ -20,23 +20,24 @@ describe('CreateUser', () => {
       role: 'any_user_role',
     };
     hasherGenerator = mock();
-    loadUserRepository = mock();
-    loadUserRepository.load.mockResolvedValue(undefined);
+    userRepository = mock();
+    userRepository.load.mockResolvedValue(undefined);
+    hasherGenerator.generate.mockResolvedValue({ ciphertext: 'any_hashed_password' });
   });
 
   beforeEach(() => {
-    sut = setupCreateUser(loadUserRepository, hasherGenerator);
+    sut = setupCreateUser(userRepository, hasherGenerator);
   });
 
   it('Should call LoadUserRepository with correct input', async () => {
     await sut(user);
 
-    expect(loadUserRepository.load).toHaveBeenCalledWith({ email: 'any_user_email' });
-    expect(loadUserRepository.load).toHaveBeenCalledTimes(1);
+    expect(userRepository.load).toHaveBeenCalledWith({ email: 'any_user_email' });
+    expect(userRepository.load).toHaveBeenCalledTimes(1);
   });
 
-  it('Should return a CreateUserError when LoadUserRepository returns an user', async () => {
-    loadUserRepository.load.mockResolvedValueOnce({
+  it('Should return a UserAlreadyExistsError when LoadUserRepository returns an user', async () => {
+    userRepository.load.mockResolvedValueOnce({
       id: 'any_user_id',
       name: 'any_user_name',
       email: 'any_user_email',
@@ -54,5 +55,18 @@ describe('CreateUser', () => {
 
     expect(hasherGenerator.generate).toHaveBeenCalledWith({ plaintext: 'any_user_password' });
     expect(hasherGenerator.generate).toHaveBeenCalledTimes(1);
+  });
+
+  it('Should call SaveUserRepository with correct input', async () => {
+    await sut(user);
+
+    expect(userRepository.save).toHaveBeenCalledWith({
+      name: 'any_user_name',
+      email: 'any_user_email',
+      cpf: 'any_user_cpf',
+      password: 'any_hashed_password',
+      role: 'any_user_role',
+    });
+    expect(userRepository.save).toHaveBeenCalledTimes(1);
   });
 });
