@@ -3,7 +3,7 @@ import { mock, MockProxy } from 'jest-mock-extended';
 import { setupCreateUser, CreateUser } from '@/domain/usecases';
 import { LoadUserRepository, SaveUserRepository, LoadRoleRepository } from '@/domain/contracts/repositories';
 import { HasherGenerator } from '@/domain/contracts/gateways';
-import { UserAlreadyExistsError, NonexistentRoleError } from '@/domain/errors';
+import { EmailAlreadyExistsError, NonexistentRoleError } from '@/domain/errors';
 
 describe('CreateUser', () => {
   let user: any;
@@ -39,7 +39,7 @@ describe('CreateUser', () => {
     expect(userRepository.load).toHaveBeenCalledTimes(1);
   });
 
-  it('Should return a UserAlreadyExistsError when LoadUserRepository returns an user', async () => {
+  it('Should return a EmailAlreadyExistsError when LoadUserRepository returns an user', async () => {
     userRepository.load.mockResolvedValueOnce({
       id: 'any_user_id',
       name: 'any_user_name',
@@ -50,7 +50,7 @@ describe('CreateUser', () => {
 
     const promise = sut(user);
 
-    await expect(promise).rejects.toThrow(new UserAlreadyExistsError());
+    await expect(promise).rejects.toThrow(new EmailAlreadyExistsError());
   });
 
   it('Should call HashGenerator with correct input', async () => {
