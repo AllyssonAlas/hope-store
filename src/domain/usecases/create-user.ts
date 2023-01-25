@@ -4,7 +4,7 @@ import {
   LoadRoleRepository,
 } from '@/domain/contracts/repositories';
 import { HasherGenerator } from '@/domain/contracts/gateways';
-import { UserAlreadyExistsError } from '@/domain/errors';
+import { UserAlreadyExistsError, NonexistentRoleError } from '@/domain/errors';
 
 type Setup = (userRepo: LoadUserRepository & SaveUserRepository, roleRepo: LoadRoleRepository, hasher: HasherGenerator) => CreateUser
 export type CreateUser = (input: Input) => Promise<void>
@@ -15,7 +15,10 @@ export const setupCreateUser: Setup = (userRepo, roleRepo, hasher) => async (inp
   if (user) {
     throw new UserAlreadyExistsError();
   }
-  await roleRepo.load({ name: input.role });
+  const role = await roleRepo.load({ name: input.role });
+  if (!role) {
+    throw new NonexistentRoleError();
+  }
   const { ciphertext } = await hasher.generate({ plaintext: input.password });
   await userRepo.save({
     cpf: input.cpf,
