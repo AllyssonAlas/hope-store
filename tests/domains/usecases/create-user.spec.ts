@@ -1,7 +1,7 @@
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { setupCreateUser, CreateUser } from '@/domain/usecases';
-import { LoadUserRepository, SaveUserRepository } from '@/domain/contracts/repositories';
+import { LoadUserRepository, SaveUserRepository, LoadRoleRepository } from '@/domain/contracts/repositories';
 import { HasherGenerator } from '@/domain/contracts/gateways';
 import { UserAlreadyExistsError } from '@/domain/errors';
 
@@ -9,6 +9,7 @@ describe('CreateUser', () => {
   let user: any;
   let hasherGenerator: MockProxy<HasherGenerator>;
   let userRepository: MockProxy<LoadUserRepository & SaveUserRepository>;
+  let roleRepository: MockProxy<LoadRoleRepository>;
   let sut: CreateUser;
 
   beforeAll(() => {
@@ -21,12 +22,13 @@ describe('CreateUser', () => {
     };
     hasherGenerator = mock();
     userRepository = mock();
+    roleRepository = mock();
     userRepository.load.mockResolvedValue(undefined);
     hasherGenerator.generate.mockResolvedValue({ ciphertext: 'any_hashed_password' });
   });
 
   beforeEach(() => {
-    sut = setupCreateUser(userRepository, hasherGenerator);
+    sut = setupCreateUser(userRepository, roleRepository, hasherGenerator);
   });
 
   it('Should call LoadUserRepository with correct input', async () => {
@@ -55,6 +57,13 @@ describe('CreateUser', () => {
 
     expect(hasherGenerator.generate).toHaveBeenCalledWith({ plaintext: 'any_user_password' });
     expect(hasherGenerator.generate).toHaveBeenCalledTimes(1);
+  });
+
+  it('Should call LoadRoleRepository with correct input', async () => {
+    await sut(user);
+
+    expect(roleRepository.load).toHaveBeenCalledWith({ name: 'any_user_role' });
+    expect(roleRepository.load).toHaveBeenCalledTimes(1);
   });
 
   it('Should call SaveUserRepository with correct input', async () => {
