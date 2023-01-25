@@ -1,3 +1,4 @@
+import { User } from '@/domain/entities';
 import {
   LoadUserRepository,
   SaveUserRepository,
@@ -10,21 +11,18 @@ type Setup = (userRepo: LoadUserRepository & SaveUserRepository, roleRepo: LoadR
 export type CreateUser = (input: Input) => Promise<void>
 type Input = { name: string, email: string, cpf: string, password: string, role: string }
 
-export const setupCreateUser: Setup = (userRepo, roleRepo, hasher) => async (input) => {
-  const user = await userRepo.load({ email: input.email });
-  if (user) {
-    throw new EmailAlreadyExistsError();
-  }
-  const role = await roleRepo.load({ name: input.role });
-  if (!role) {
-    throw new NonexistentRoleError();
-  }
-  const { ciphertext } = await hasher.generate({ plaintext: input.password });
-  await userRepo.save({
-    cpf: input.cpf,
-    name: input.name,
-    password: ciphertext,
-    email: input.email,
-    role: input.role,
-  });
+export const setupCreateUser: Setup = (userRepo, roleRepo, hasher) => {
+  return async ({ email, role, password, ...inputData }) => {
+    const user = await userRepo.load({ email });
+    if (user) {
+      throw new EmailAlreadyExistsError();
+    }
+    const roleData = await roleRepo.load({ name: role });
+    if (!roleData) {
+      throw new NonexistentRoleError();
+    }
+    const { ciphertext } = await hasher.generate({ plaintext: password });
+    const userData = new User({ ...inputData, role: roleData.id, password: ciphertext, email });
+    await userRepo.save(userData);
+  };
 };

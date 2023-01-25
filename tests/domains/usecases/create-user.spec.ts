@@ -83,7 +83,7 @@ describe('CreateUser', () => {
       email: 'any_user_email',
       cpf: 'any_user_cpf',
       password: 'any_hashed_password',
-      role: 'any_user_role',
+      role: 'any_role_id',
     });
     expect(userRepository.save).toHaveBeenCalledTimes(1);
   });
