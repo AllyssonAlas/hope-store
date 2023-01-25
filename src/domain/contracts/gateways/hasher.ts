@@ -1,5 +1,5 @@
 export interface HasherGenerator {
-  generate: (input: HasherGenerator.Input) => Promise<void>;
+  generate: (input: HasherGenerator.Input) => Promise<HasherGenerator.Output>;
 }
 
 export namespace HasherGenerator {
@@ -7,4 +7,7 @@ export namespace HasherGenerator {
     plaintext: string;
   };
 
+  export type Output = {
+    ciphertext: string;
+  };
 }

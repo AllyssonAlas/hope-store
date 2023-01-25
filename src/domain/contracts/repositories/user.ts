@@ -12,5 +12,20 @@ export namespace LoadUserRepository {
     name: string,
     email: string,
     cpf: string,
-    role: string } | undefined;
+    role: string,
+  } | undefined;
+}
+
+export interface SaveUserRepository {
+  save: (input: SaveUserRepository.Input) => Promise<void>;
+}
+
+export namespace SaveUserRepository {
+  export type Input = {
+    name: string,
+    email: string,
+    cpf: string,
+    password: string,
+    role: string,
+  };
 }
