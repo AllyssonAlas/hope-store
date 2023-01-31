@@ -39,7 +39,15 @@ describe('CreateUser', () => {
     expect(userRepository.load).toHaveBeenCalledTimes(1);
   });
 
-  it('Should return a EmailAlreadyExistsError when LoadUserRepository returns an user', async () => {
+  it('should rethrow if LoadUserRepository throws', async () => {
+    userRepository.load.mockRejectedValueOnce(new Error('load_user_repository_error'));
+
+    const promise = sut(user);
+
+    await expect(promise).rejects.toThrow(new Error('load_user_repository_error'));
+  });
+
+  it('Should throw EmailAlreadyExistsError when LoadUserRepository returns an user', async () => {
     userRepository.load.mockResolvedValueOnce({
       id: 'any_user_id',
       name: 'any_user_name',
@@ -60,11 +68,27 @@ describe('CreateUser', () => {
     expect(hasherGenerator.generate).toHaveBeenCalledTimes(1);
   });
 
+  it('Should rethrow if HashGenerator throws', async () => {
+    hasherGenerator.generate.mockRejectedValueOnce(new Error('hasher_generator_error'));
+
+    const promise = sut(user);
+
+    await expect(promise).rejects.toThrow(new Error('hasher_generator_error'));
+  });
+
   it('Should call LoadRoleRepository with correct input', async () => {
     await sut(user);
 
     expect(roleRepository.load).toHaveBeenCalledWith({ name: 'any_user_role' });
     expect(roleRepository.load).toHaveBeenCalledTimes(1);
+  });
+
+  it('Should rethrow if LoadRoleRepository throws', async () => {
+    roleRepository.load.mockRejectedValueOnce(new Error('load_role_repository_error'));
+
+    const promise = sut(user);
+
+    await expect(promise).rejects.toThrow(new Error('load_role_repository_error'));
   });
 
   it('Should throw NonexistentRoleError if LoadRoleRepository returns undefined', async () => {
@@ -86,5 +110,13 @@ describe('CreateUser', () => {
       role: 'any_role_id',
     });
     expect(userRepository.save).toHaveBeenCalledTimes(1);
+  });
+
+  it('Should rethrow if SaveUserRepository throws', async () => {
+    userRepository.save.mockRejectedValueOnce(new Error('save_user_repository_error'));
+
+    const promise = sut(user);
+
+    await expect(promise).rejects.toThrow(new Error('save_user_repository_error'));
   });
 });
