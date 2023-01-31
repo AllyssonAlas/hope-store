@@ -1,9 +1,12 @@
 import { mock, MockProxy } from 'jest-mock-extended';
 
+import { User } from '@/domain/entities';
 import { setupCreateUser, CreateUser } from '@/domain/usecases';
 import { LoadUserRepository, SaveUserRepository, LoadRoleRepository } from '@/domain/contracts/repositories';
 import { HasherGenerator } from '@/domain/contracts/gateways';
 import { EmailAlreadyExistsError, NonexistentRoleError } from '@/domain/errors';
+
+jest.mock('@/domain/entities/user');
 
 describe('CreateUser', () => {
   let user: any;
@@ -102,13 +105,7 @@ describe('CreateUser', () => {
   it('Should call SaveUserRepository with correct input', async () => {
     await sut(user);
 
-    expect(userRepository.save).toHaveBeenCalledWith({
-      name: 'any_user_name',
-      email: 'any_user_email',
-      cpf: 'any_user_cpf',
-      password: 'any_hashed_password',
-      role: 'any_role_id',
-    });
+    expect(userRepository.save).toHaveBeenCalledWith(jest.mocked(User).mock.instances[0]);
     expect(userRepository.save).toHaveBeenCalledTimes(1);
   });
 
