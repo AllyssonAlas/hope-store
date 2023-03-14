@@ -4,12 +4,17 @@ import { PgUserRepository } from '@/infra/database/postgres/repositories';
 
 describe('PgUserRepository', () => {
   let prisma: PrismaClient;
+  let sut: PgUserRepository;
 
   beforeAll(() => {
     prisma = new PrismaClient();
   });
 
   beforeEach(async () => {
+    sut = new PgUserRepository();
+  });
+
+  afterEach(async () => {
     await prisma.user.deleteMany({});
   });
 
@@ -25,7 +30,6 @@ describe('PgUserRepository', () => {
         },
       });
 
-      const sut = new PgUserRepository();
       const user = await sut.load({ email: 'any_existing_email@mail.com' });
 
       expect(user?.id).toBeTruthy();
@@ -36,8 +40,6 @@ describe('PgUserRepository', () => {
   });
 
   it('Should return null if email does not exist', async () => {
-    const sut = new PgUserRepository();
-
     const user = await sut.load({ email: 'non_existing_email@mail.com' });
 
     expect(user).toBeNull();
