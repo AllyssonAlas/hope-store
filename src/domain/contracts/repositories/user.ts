@@ -13,7 +13,7 @@ export namespace LoadUserRepository {
     email: string,
     cpf: string,
     role: string,
-  } | undefined;
+  } | null;
 }
 
 export interface SaveUserRepository {
