@@ -34,4 +34,12 @@ describe('PgUserRepository', () => {
       expect(user?.role).toBe('any_role_id');
     });
   });
+
+  it('Should return null if email does not exist', async () => {
+    const sut = new PgUserRepository();
+
+    const user = await sut.load({ email: 'non_existing_email@mail.com' });
+
+    expect(user).toBeNull();
+  });
 });
