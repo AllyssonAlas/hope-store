@@ -23,7 +23,6 @@ describe('PgUserRepository', () => {
       await prisma.user.create({
         data: {
           name: 'any_name',
-          cpf: 'any_cpf',
           email: 'any_existing_email@mail.com',
           password: 'any_password',
           role: 'any_role_id',

@@ -19,7 +19,6 @@ describe('CreateUser', () => {
     user = {
       name: 'any_user_name',
       email: 'any_user_email',
-      cpf: 'any_user_cpf',
       password: 'any_user_password',
       role: 'any_user_role',
     };
@@ -55,7 +54,6 @@ describe('CreateUser', () => {
       id: 'any_user_id',
       name: 'any_user_name',
       email: 'any_user_email',
-      cpf: 'any_user_cpf',
       role: 'any_user_role',
     });
 
