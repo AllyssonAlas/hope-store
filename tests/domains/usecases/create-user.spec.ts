@@ -93,7 +93,7 @@ describe('CreateUser', () => {
   });
 
   it('Should throw NonexistentRoleError if LoadRoleRepository returns undefined', async () => {
-    roleRepository.load.mockResolvedValueOnce(undefined);
+    roleRepository.load.mockResolvedValueOnce(null);
 
     const promise = sut(user);
 

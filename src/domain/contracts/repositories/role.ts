@@ -10,5 +10,5 @@ export namespace LoadRoleRepository {
   export type Output = {
     id: string,
     name: string,
-  } | undefined;
+  } | null;
 }
