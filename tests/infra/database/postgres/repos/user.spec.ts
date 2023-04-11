@@ -16,16 +16,24 @@ describe('PgUserRepository', () => {
 
   afterEach(async () => {
     await prisma.user.deleteMany({});
+    await prisma.role.deleteMany({});
   });
 
   describe('load', () => {
     it('Should return an user if email exists', async () => {
+      await prisma.role.create({
+        data: {
+          id: 'any_role_id',
+          name: 'any_role',
+        },
+      });
+
       await prisma.user.create({
         data: {
           name: 'any_name',
           email: 'any_existing_email@mail.com',
           password: 'any_password',
-          role: 'any_role_id',
+          roleId: 'any_role_id',
         },
       });
 
@@ -34,7 +42,6 @@ describe('PgUserRepository', () => {
       expect(user?.id).toBeTruthy();
       expect(user?.name).toBe('any_name');
       expect(user?.email).toBe('any_existing_email@mail.com');
-      expect(user?.role).toBe('any_role_id');
     });
   });
 

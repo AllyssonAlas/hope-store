@@ -54,7 +54,7 @@ describe('CreateUser', () => {
       id: 'any_user_id',
       name: 'any_user_name',
       email: 'any_user_email',
-      role: 'any_user_role',
+      roleId: 'any_user_role',
     });
 
     const promise = sut(user);
