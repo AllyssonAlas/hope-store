@@ -52,4 +52,18 @@ describe('CreateUserController', () => {
     expect(response.statusCode).toBe(400);
     expect(response.data).toEqual(new Error('Field role is required'));
   });
+
+  it('Should return 400 if email received is not valid', async () => {
+    const sut = new CreateUserController();
+
+    const response = await sut.handle({
+      name: 'any_name',
+      email: '@mail.com',
+      password: 'any_password',
+      role: 'any_role',
+    });
+
+    expect(response.statusCode).toBe(400);
+    expect(response.data).toEqual(new Error('Field email is not valid'));
+  });
 });
