@@ -27,5 +27,11 @@ describe('PgRoleRepository', () => {
       expect(role?.id).toBeTruthy();
       expect(role?.name).toBe('any_role_name');
     });
+
+    it('Should return null if name does not exist', async () => {
+      const role = await sut.load({ name: 'invalid_role_name' });
+
+      expect(role).toBeNull();
+    });
   });
 });
