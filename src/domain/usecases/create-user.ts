@@ -9,7 +9,7 @@ import { EmailAlreadyExistsError, NonexistentRoleError } from '@/domain/errors';
 
 type Setup = (userRepo: LoadUserRepository & SaveUserRepository, roleRepo: LoadRoleRepository, hasher: HasherGenerator) => CreateUser
 export type CreateUser = (input: Input) => Promise<void>
-type Input = { name: string, email: string, cpf: string, password: string, role: string }
+type Input = { name: string, email: string, password: string, role: string }
 
 export const setupCreateUser: Setup = (userRepo, roleRepo, hasher) => {
   return async ({ email, role, password, ...inputData }) => {

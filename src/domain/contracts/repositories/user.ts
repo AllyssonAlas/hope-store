@@ -23,7 +23,6 @@ export namespace SaveUserRepository {
   export type Input = {
     name: string,
     email: string,
-    cpf: string,
     password: string,
     role: string,
   };
