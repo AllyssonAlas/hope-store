@@ -12,5 +12,12 @@ export class CreateUserController {
         };
       }
     }
+
+    if (!(/^[a-z0-9.]+@[a-z0-9]+\.[a-z]+\.([a-z]+)?$/i).test(httpRequest.email)) {
+      return {
+        data: new Error('Field email is not valid'),
+        statusCode: 400,
+      };
+    }
   }
 }
