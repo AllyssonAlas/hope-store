@@ -1,9 +1,11 @@
+import { CreateUser } from '@/domain/usecases';
 import { HttpResponse } from '@/application/helpers';
 
 export class CreateUserController {
+  constructor(private readonly createUser: CreateUser) {}
+
   async handle(httpRequest: any):Promise<HttpResponse | any> {
     const fields = ['name', 'email', 'password', 'role'];
-
     for (const field of fields) {
       if (!Object.keys(httpRequest).includes(field)) {
         return {
@@ -12,12 +14,12 @@ export class CreateUserController {
         };
       }
     }
-
-    if (!(/^[a-z0-9.]+@[a-z0-9]+\.[a-z]+\.([a-z]+)?$/i).test(httpRequest.email)) {
+    if (!(/^[\w.]+@\w+.\w{2,}(?:.\w{2})?$/gmi).test(httpRequest.email)) {
       return {
         data: new Error('Field email is not valid'),
         statusCode: 400,
       };
     }
+    await this.createUser(httpRequest);
   }
 }
