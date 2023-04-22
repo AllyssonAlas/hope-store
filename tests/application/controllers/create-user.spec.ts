@@ -1,9 +1,13 @@
 import { CreateUserController } from '@/application/controllers';
 
 describe('CreateUserController', () => {
-  it('Should return 400 if name is not received', async () => {
-    const sut = new CreateUserController();
+  let sut: CreateUserController;
 
+  beforeEach(() => {
+    sut = new CreateUserController();
+  });
+
+  it('Should return 400 if name is not received', async () => {
     const response = await sut.handle({
       email: 'any_email@mail.com',
       password: 'any_password',
@@ -15,8 +19,6 @@ describe('CreateUserController', () => {
   });
 
   it('Should return 400 if email is not received', async () => {
-    const sut = new CreateUserController();
-
     const response = await sut.handle({
       name: 'any_name',
       password: 'any_password',
@@ -28,8 +30,6 @@ describe('CreateUserController', () => {
   });
 
   it('Should return 400 if password is not received', async () => {
-    const sut = new CreateUserController();
-
     const response = await sut.handle({
       name: 'any_name',
       email: 'any_email@mail.com',
@@ -41,8 +41,6 @@ describe('CreateUserController', () => {
   });
 
   it('Should return 400 if role is not received', async () => {
-    const sut = new CreateUserController();
-
     const response = await sut.handle({
       name: 'any_name',
       email: 'any_email@mail.com',
@@ -54,8 +52,18 @@ describe('CreateUserController', () => {
   });
 
   it('Should return 400 if email received is not valid', async () => {
-    const sut = new CreateUserController();
+    const response = await sut.handle({
+      name: 'any_name',
+      email: '@mail.com',
+      password: 'any_password',
+      role: 'any_role',
+    });
 
+    expect(response.statusCode).toBe(400);
+    expect(response.data).toEqual(new Error('Field email is not valid'));
+  });
+
+  it('Should call CreateUser with correct input', async () => {
     const response = await sut.handle({
       name: 'any_name',
       email: '@mail.com',
