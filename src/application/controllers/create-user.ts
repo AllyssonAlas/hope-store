@@ -5,21 +5,28 @@ export class CreateUserController {
   constructor(private readonly createUser: CreateUser) {}
 
   async handle(httpRequest: any):Promise<HttpResponse | any> {
-    const fields = ['name', 'email', 'password', 'role'];
-    for (const field of fields) {
-      if (!Object.keys(httpRequest).includes(field)) {
+    try {
+      const fields = ['name', 'email', 'password', 'role'];
+      for (const field of fields) {
+        if (!Object.keys(httpRequest).includes(field)) {
+          return {
+            data: new Error(`Field ${field} is required`),
+            statusCode: 400,
+          };
+        }
+      }
+      if (!(/^[\w.]+@\w+.\w{2,}(?:.\w{2})?$/gmi).test(httpRequest.email)) {
         return {
-          data: new Error(`Field ${field} is required`),
+          data: new Error('Field email is not valid'),
           statusCode: 400,
         };
       }
-    }
-    if (!(/^[\w.]+@\w+.\w{2,}(?:.\w{2})?$/gmi).test(httpRequest.email)) {
+      await this.createUser(httpRequest);
+    } catch (error) {
       return {
-        data: new Error('Field email is not valid'),
-        statusCode: 400,
+        statusCode: 500,
+        data: new Error('create_user_error'),
       };
     }
-    await this.createUser(httpRequest);
   }
 }
