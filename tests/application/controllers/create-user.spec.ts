@@ -1,5 +1,6 @@
 import { EmailAlreadyExistsError, NonexistentRoleError } from '@/domain/errors';
 import { CreateUserController } from '@/application/controllers';
+import { ForbiddenError, ServerError, RequiredParamError, InvalidRequiredParamError } from '@/application/errors';
 
 describe('CreateUserController', () => {
   let sut: CreateUserController;
@@ -28,7 +29,7 @@ describe('CreateUserController', () => {
     });
 
     expect(response.statusCode).toBe(400);
-    expect(response.data).toEqual(new Error('Field name is required'));
+    expect(response.data).toEqual(new RequiredParamError('name'));
   });
 
   it('Should return 400 if email is not received', async () => {
@@ -39,7 +40,7 @@ describe('CreateUserController', () => {
     });
 
     expect(response.statusCode).toBe(400);
-    expect(response.data).toEqual(new Error('Field email is required'));
+    expect(response.data).toEqual(new RequiredParamError('email'));
   });
 
   it('Should return 400 if password is not received', async () => {
@@ -50,7 +51,7 @@ describe('CreateUserController', () => {
     });
 
     expect(response.statusCode).toBe(400);
-    expect(response.data).toEqual(new Error('Field password is required'));
+    expect(response.data).toEqual(new RequiredParamError('password'));
   });
 
   it('Should return 400 if role is not received', async () => {
@@ -61,7 +62,7 @@ describe('CreateUserController', () => {
     });
 
     expect(response.statusCode).toBe(400);
-    expect(response.data).toEqual(new Error('Field role is required'));
+    expect(response.data).toEqual(new RequiredParamError('role'));
   });
 
   it('Should return 400 if email received is not valid', async () => {
@@ -73,7 +74,7 @@ describe('CreateUserController', () => {
     });
 
     expect(response.statusCode).toBe(400);
-    expect(response.data).toEqual(new Error('Field email is not valid'));
+    expect(response.data).toEqual(new InvalidRequiredParamError('email'));
   });
 
   it('Should call CreateUser with correct input', async () => {
@@ -89,12 +90,13 @@ describe('CreateUserController', () => {
   });
 
   it('Should return 500 if CreateUser throws', async () => {
-    createUser.mockRejectedValueOnce(new Error('create_user_error'));
+    const error = new Error('create_user_error');
+    createUser.mockRejectedValueOnce(error);
 
     const response = await sut.handle(request);
 
     expect(response.statusCode).toBe(500);
-    expect(response.data).toEqual(new Error('create_user_error'));
+    expect(response.data).toEqual(new ServerError(error));
   });
 
   it('Should return 403 if CreateUser throws EmailAlreadyExistsError', async () => {
@@ -103,7 +105,7 @@ describe('CreateUserController', () => {
     const response = await sut.handle(request);
 
     expect(response.statusCode).toBe(403);
-    expect(response.data).toEqual(new EmailAlreadyExistsError());
+    expect(response.data).toEqual(new ForbiddenError());
   });
 
   it('Should return 403 if CreateUser throws NonexistentRoleError', async () => {
@@ -112,6 +114,6 @@ describe('CreateUserController', () => {
     const response = await sut.handle(request);
 
     expect(response.statusCode).toBe(403);
-    expect(response.data).toEqual(new NonexistentRoleError());
+    expect(response.data).toEqual(new ForbiddenError());
   });
 });
