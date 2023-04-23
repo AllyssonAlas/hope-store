@@ -1,7 +1,7 @@
 import { CreateUser } from '@/domain/usecases';
 import { EmailAlreadyExistsError, NonexistentRoleError } from '@/domain/errors';
-import { HttpResponse } from '@/application/helpers';
-import { ForbiddenError, ServerError, RequiredParamError, InvalidRequiredParamError } from '@/application/errors';
+import { HttpResponse, badRequest, forbidden, serverError } from '@/application/helpers';
+import { RequiredParamError, InvalidRequiredParamError } from '@/application/errors';
 
 export class CreateUserController {
   constructor(private readonly createUser: CreateUser) {}
@@ -11,31 +11,19 @@ export class CreateUserController {
       const fields = ['name', 'email', 'password', 'role'];
       for (const field of fields) {
         if (!Object.keys(httpRequest).includes(field)) {
-          return {
-            data: new RequiredParamError(field),
-            statusCode: 400,
-          };
+          return badRequest(new RequiredParamError(field));
         }
       }
       if (!(/^[\w.]+@\w+.\w{2,}(?:.\w{2})?$/gmi).test(httpRequest.email)) {
-        return {
-          data: new InvalidRequiredParamError('email'),
-          statusCode: 400,
-        };
+        return badRequest(new InvalidRequiredParamError('email'));
       }
       await this.createUser(httpRequest);
     } catch (error) {
       if (error instanceof EmailAlreadyExistsError || error instanceof NonexistentRoleError) {
-        return {
-          statusCode: 403,
-          data: new ForbiddenError(),
-        };
+        return forbidden();
       }
 
-      return {
-        statusCode: 500,
-        data: new ServerError(error instanceof Error ? error : undefined),
-      };
+      return serverError(error instanceof Error ? error : undefined);
     }
   }
 }
