@@ -1,5 +1,5 @@
 import { CreateUser } from '@/domain/usecases';
-import { EmailAlreadyExistsError } from '@/domain/errors';
+import { EmailAlreadyExistsError, NonexistentRoleError } from '@/domain/errors';
 import { HttpResponse } from '@/application/helpers';
 
 export class CreateUserController {
@@ -24,10 +24,10 @@ export class CreateUserController {
       }
       await this.createUser(httpRequest);
     } catch (error) {
-      if (error instanceof EmailAlreadyExistsError) {
+      if (error instanceof EmailAlreadyExistsError || error instanceof NonexistentRoleError) {
         return {
           statusCode: 403,
-          data: new EmailAlreadyExistsError(),
+          data: error,
         };
       }
 
