@@ -1,6 +1,6 @@
 import { CreateUser } from '@/domain/usecases';
 import { EmailAlreadyExistsError, NonexistentRoleError } from '@/domain/errors';
-import { HttpResponse, badRequest, forbidden, serverError } from '@/application/helpers';
+import { HttpResponse, badRequest, forbidden, serverError, noContent } from '@/application/helpers';
 import { RequiredParamError, InvalidRequiredParamError } from '@/application/errors';
 
 export class CreateUserController {
@@ -18,6 +18,7 @@ export class CreateUserController {
         return badRequest(new InvalidRequiredParamError('email'));
       }
       await this.createUser(httpRequest);
+      return noContent();
     } catch (error) {
       if (error instanceof EmailAlreadyExistsError || error instanceof NonexistentRoleError) {
         return forbidden();

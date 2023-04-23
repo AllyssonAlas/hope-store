@@ -5,6 +5,11 @@ export type HttpResponse = {
   statusCode: number;
 }
 
+export const noContent = (): HttpResponse => ({
+  data: null,
+  statusCode: 204,
+});
+
 export const badRequest = (error: Error): HttpResponse => ({
   data: error,
   statusCode: 400,
