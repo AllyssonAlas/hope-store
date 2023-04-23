@@ -3,9 +3,16 @@ import { CreateUserController } from '@/application/controllers';
 describe('CreateUserController', () => {
   let sut: CreateUserController;
   let createUser: jest.Mock;
+  let request: object;
 
   beforeAll(() => {
     createUser = jest.fn();
+    request = {
+      name: 'any_name',
+      email: 'email@mail.com',
+      password: 'any_password',
+      role: 'any_role',
+    };
   });
 
   beforeEach(() => {
@@ -69,12 +76,7 @@ describe('CreateUserController', () => {
   });
 
   it('Should call CreateUser with correct input', async () => {
-    await sut.handle({
-      name: 'any_name',
-      email: 'email@mail.com',
-      password: 'any_password',
-      role: 'any_role',
-    });
+    await sut.handle(request);
 
     expect(createUser).toHaveBeenCalledWith({
       name: 'any_name',
@@ -83,5 +85,14 @@ describe('CreateUserController', () => {
       role: 'any_role',
     });
     expect(createUser).toHaveBeenCalledTimes(1);
+  });
+
+  it('Should return 500 if CreateUser throws', async () => {
+    createUser.mockRejectedValueOnce(() => new Error('create_user_error'));
+
+    const response = await sut.handle(request);
+
+    expect(response.statusCode).toBe(500);
+    expect(response.data).toEqual(new Error('create_user_error'));
   });
 });
