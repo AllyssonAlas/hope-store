@@ -1,4 +1,5 @@
 import { CreateUser } from '@/domain/usecases';
+import { EmailAlreadyExistsError } from '@/domain/errors';
 import { HttpResponse } from '@/application/helpers';
 
 export class CreateUserController {
@@ -23,6 +24,13 @@ export class CreateUserController {
       }
       await this.createUser(httpRequest);
     } catch (error) {
+      if (error instanceof EmailAlreadyExistsError) {
+        return {
+          statusCode: 403,
+          data: new EmailAlreadyExistsError(),
+        };
+      }
+
       return {
         statusCode: 500,
         data: new Error('create_user_error'),
