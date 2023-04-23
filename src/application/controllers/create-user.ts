@@ -33,7 +33,7 @@ export class CreateUserController {
 
       return {
         statusCode: 500,
-        data: new Error('create_user_error'),
+        data: error,
       };
     }
   }
