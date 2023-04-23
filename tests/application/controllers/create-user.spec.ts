@@ -1,4 +1,4 @@
-import { EmailAlreadyExistsError } from '@/domain/errors';
+import { EmailAlreadyExistsError, NonexistentRoleError } from '@/domain/errors';
 import { CreateUserController } from '@/application/controllers';
 
 describe('CreateUserController', () => {
@@ -104,5 +104,14 @@ describe('CreateUserController', () => {
 
     expect(response.statusCode).toBe(403);
     expect(response.data).toEqual(new EmailAlreadyExistsError());
+  });
+
+  it('Should return 403 if CreateUser throws NonexistentRoleError', async () => {
+    createUser.mockRejectedValueOnce(new NonexistentRoleError());
+
+    const response = await sut.handle(request);
+
+    expect(response.statusCode).toBe(403);
+    expect(response.data).toEqual(new NonexistentRoleError());
   });
 });
