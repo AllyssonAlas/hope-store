@@ -1,3 +1,4 @@
+import { EmailAlreadyExistsError } from '@/domain/errors';
 import { CreateUserController } from '@/application/controllers';
 
 describe('CreateUserController', () => {
@@ -88,11 +89,20 @@ describe('CreateUserController', () => {
   });
 
   it('Should return 500 if CreateUser throws', async () => {
-    createUser.mockRejectedValueOnce(() => new Error('create_user_error'));
+    createUser.mockRejectedValueOnce(new Error('create_user_error'));
 
     const response = await sut.handle(request);
 
     expect(response.statusCode).toBe(500);
     expect(response.data).toEqual(new Error('create_user_error'));
+  });
+
+  it('Should return 403 if CreateUser throws EmailAlreadyExistsError', async () => {
+    createUser.mockRejectedValueOnce(new EmailAlreadyExistsError());
+
+    const response = await sut.handle(request);
+
+    expect(response.statusCode).toBe(403);
+    expect(response.data).toEqual(new EmailAlreadyExistsError());
   });
 });
