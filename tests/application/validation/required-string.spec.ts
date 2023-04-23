@@ -25,4 +25,12 @@ describe('RequiredStringValidator', () => {
 
     expect(error).toEqual(new RequiredParamError('any_field_name'));
   });
+
+  it('Should return undefined if value is valid', () => {
+    const sut = new RequiredStringValidator('any_value', 'any_field_name');
+
+    const error = sut.validate();
+
+    expect(error).toBeUndefined();
+  });
 });
