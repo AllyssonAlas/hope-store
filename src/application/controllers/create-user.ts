@@ -1,6 +1,7 @@
 import { CreateUser } from '@/domain/usecases';
 import { EmailAlreadyExistsError, NonexistentRoleError } from '@/domain/errors';
 import { HttpResponse } from '@/application/helpers';
+import { ForbiddenError, ServerError, RequiredParamError, InvalidRequiredParamError } from '@/application/errors';
 
 export class CreateUserController {
   constructor(private readonly createUser: CreateUser) {}
@@ -11,14 +12,14 @@ export class CreateUserController {
       for (const field of fields) {
         if (!Object.keys(httpRequest).includes(field)) {
           return {
-            data: new Error(`Field ${field} is required`),
+            data: new RequiredParamError(field),
             statusCode: 400,
           };
         }
       }
       if (!(/^[\w.]+@\w+.\w{2,}(?:.\w{2})?$/gmi).test(httpRequest.email)) {
         return {
-          data: new Error('Field email is not valid'),
+          data: new InvalidRequiredParamError('email'),
           statusCode: 400,
         };
       }
@@ -27,13 +28,13 @@ export class CreateUserController {
       if (error instanceof EmailAlreadyExistsError || error instanceof NonexistentRoleError) {
         return {
           statusCode: 403,
-          data: error,
+          data: new ForbiddenError(),
         };
       }
 
       return {
         statusCode: 500,
-        data: error,
+        data: new ServerError(error instanceof Error ? error : undefined),
       };
     }
   }
