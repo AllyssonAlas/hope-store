@@ -5,7 +5,12 @@ import { ForbiddenError, ServerError, RequiredParamError, InvalidRequiredParamEr
 describe('CreateUserController', () => {
   let sut: CreateUserController;
   let createUser: jest.Mock;
-  let request: object;
+  let request: {
+    name: string;
+    email: string;
+    password: string;
+    role: string;
+  };
 
   beforeAll(() => {
     createUser = jest.fn();
@@ -26,7 +31,7 @@ describe('CreateUserController', () => {
       email: 'any_email@mail.com',
       password: 'any_password',
       role: 'any_role',
-    });
+    } as any);
 
     expect(response).toEqual({ data: new RequiredParamError('name'), statusCode: 400 });
   });
@@ -36,7 +41,7 @@ describe('CreateUserController', () => {
       name: 'any_name',
       password: 'any_password',
       role: 'any_role',
-    });
+    } as any);
 
     expect(response).toEqual({ data: new RequiredParamError('email'), statusCode: 400 });
   });
@@ -46,7 +51,7 @@ describe('CreateUserController', () => {
       name: 'any_name',
       email: 'any_email@mail.com',
       role: 'any_role',
-    });
+    } as any);
 
     expect(response).toEqual({ data: new RequiredParamError('password'), statusCode: 400 });
   });
@@ -56,7 +61,7 @@ describe('CreateUserController', () => {
       name: 'any_name',
       email: 'any_email@mail.com',
       password: 'any_password',
-    });
+    } as any);
 
     expect(response).toEqual({ data: new RequiredParamError('role'), statusCode: 400 });
   });
