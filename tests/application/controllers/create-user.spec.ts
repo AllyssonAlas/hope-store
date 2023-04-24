@@ -1,6 +1,10 @@
 import { EmailAlreadyExistsError, NonexistentRoleError } from '@/domain/errors';
 import { CreateUserController } from '@/application/controllers';
-import { ForbiddenError, ServerError, RequiredParamError, InvalidRequiredParamError } from '@/application/errors';
+import { ForbiddenError, ServerError } from '@/application/errors';
+import { RequiredStringValidator, RequiredEmailValidator } from '@/application/validation';
+
+jest.mock('@/application/validation/required-string');
+jest.mock('@/application/validation/required-email');
 
 describe('CreateUserController', () => {
   let sut: CreateUserController;
@@ -26,55 +30,30 @@ describe('CreateUserController', () => {
     sut = new CreateUserController(createUser);
   });
 
-  it('Should return 400 if name is not received', async () => {
-    const response = await sut.handle({
-      email: 'any_email@mail.com',
-      password: 'any_password',
-      role: 'any_role',
-    } as any);
+  it('Should return 400 if RequiredStringValidator returns an error', async () => {
+    const error = new Error('validation_error');
+    const RequiredStringValidatorSpy = jest.fn().mockImplementationOnce(() => ({
+      validate: jest.fn().mockReturnValueOnce(error),
+    }));
+    jest.mocked(RequiredStringValidator).mockImplementationOnce(RequiredStringValidatorSpy);
 
-    expect(response).toEqual({ data: new RequiredParamError('name'), statusCode: 400 });
+    const response = await sut.handle(request);
+
+    expect(RequiredStringValidator).toHaveBeenCalledWith('any_name', 'name');
+    expect(response).toEqual({ data: error, statusCode: 400 });
   });
 
-  it('Should return 400 if email is not received', async () => {
-    const response = await sut.handle({
-      name: 'any_name',
-      password: 'any_password',
-      role: 'any_role',
-    } as any);
+  it('Should return 400 if RequiredEmailValidator returns an error', async () => {
+    const error = new Error('validation_error');
+    const RequiredEmailValidatorSpy = jest.fn().mockImplementationOnce(() => ({
+      validate: jest.fn().mockReturnValueOnce(error),
+    }));
+    jest.mocked(RequiredEmailValidator).mockImplementationOnce(RequiredEmailValidatorSpy);
 
-    expect(response).toEqual({ data: new RequiredParamError('email'), statusCode: 400 });
-  });
+    const response = await sut.handle(request);
 
-  it('Should return 400 if password is not received', async () => {
-    const response = await sut.handle({
-      name: 'any_name',
-      email: 'any_email@mail.com',
-      role: 'any_role',
-    } as any);
-
-    expect(response).toEqual({ data: new RequiredParamError('password'), statusCode: 400 });
-  });
-
-  it('Should return 400 if role is not received', async () => {
-    const response = await sut.handle({
-      name: 'any_name',
-      email: 'any_email@mail.com',
-      password: 'any_password',
-    } as any);
-
-    expect(response).toEqual({ data: new RequiredParamError('role'), statusCode: 400 });
-  });
-
-  it('Should return 400 if email received is not valid', async () => {
-    const response = await sut.handle({
-      name: 'any_name',
-      email: '@mail.com',
-      password: 'any_password',
-      role: 'any_role',
-    });
-
-    expect(response).toEqual({ data: new InvalidRequiredParamError('email'), statusCode: 400 });
+    expect(RequiredEmailValidator).toHaveBeenCalledWith(request.email, 'email');
+    expect(response).toEqual({ data: error, statusCode: 400 });
   });
 
   it('Should call CreateUser with correct input', async () => {
