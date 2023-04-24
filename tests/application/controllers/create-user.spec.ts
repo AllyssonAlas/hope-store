@@ -3,7 +3,7 @@ import { CreateUserController } from '@/application/controllers';
 import { ForbiddenError, ServerError } from '@/application/errors';
 import { ValidationComposite, RequiredEmailValidator, RequiredStringValidator } from '@/application/validation';
 
-jest.mock('@/application/validation/validation-composite');
+jest.mock('@/application/validation/composite');
 
 describe('CreateUserController', () => {
   let sut: CreateUserController;
