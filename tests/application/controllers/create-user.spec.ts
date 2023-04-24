@@ -1,10 +1,9 @@
 import { EmailAlreadyExistsError, NonexistentRoleError } from '@/domain/errors';
 import { CreateUserController } from '@/application/controllers';
 import { ForbiddenError, ServerError } from '@/application/errors';
-import { RequiredStringValidator, RequiredEmailValidator } from '@/application/validation';
+import { ValidationComposite, RequiredEmailValidator, RequiredStringValidator } from '@/application/validation';
 
-jest.mock('@/application/validation/required-string');
-jest.mock('@/application/validation/required-email');
+jest.mock('@/application/validation/validation-composite');
 
 describe('CreateUserController', () => {
   let sut: CreateUserController;
@@ -30,29 +29,22 @@ describe('CreateUserController', () => {
     sut = new CreateUserController(createUser);
   });
 
-  it('Should return 400 if RequiredStringValidator returns an error', async () => {
+  it('Should return 400 if ValidationComposite returns an error', async () => {
     const error = new Error('validation_error');
-    const RequiredStringValidatorSpy = jest.fn().mockImplementationOnce(() => ({
+    const ValidationCompositeSpy = jest.fn().mockImplementationOnce(() => ({
       validate: jest.fn().mockReturnValueOnce(error),
     }));
-    jest.mocked(RequiredStringValidator).mockImplementationOnce(RequiredStringValidatorSpy);
+    jest.mocked(ValidationComposite).mockImplementationOnce(ValidationCompositeSpy);
 
     const response = await sut.handle(request);
 
-    expect(RequiredStringValidator).toHaveBeenCalledWith('any_name', 'name');
-    expect(response).toEqual({ data: error, statusCode: 400 });
-  });
-
-  it('Should return 400 if RequiredEmailValidator returns an error', async () => {
-    const error = new Error('validation_error');
-    const RequiredEmailValidatorSpy = jest.fn().mockImplementationOnce(() => ({
-      validate: jest.fn().mockReturnValueOnce(error),
-    }));
-    jest.mocked(RequiredEmailValidator).mockImplementationOnce(RequiredEmailValidatorSpy);
-
-    const response = await sut.handle(request);
-
-    expect(RequiredEmailValidator).toHaveBeenCalledWith(request.email, 'email');
+    expect(ValidationComposite).toHaveBeenCalledWith([
+      new RequiredStringValidator(request.name, 'name'),
+      new RequiredStringValidator(request.email, 'email'),
+      new RequiredStringValidator(request.password, 'email'),
+      new RequiredStringValidator(request.role, 'role'),
+      new RequiredEmailValidator(request.email, 'email'),
+    ]);
     expect(response).toEqual({ data: error, statusCode: 400 });
   });
 

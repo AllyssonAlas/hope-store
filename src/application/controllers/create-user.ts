@@ -1,7 +1,7 @@
 import { CreateUser } from '@/domain/usecases';
 import { EmailAlreadyExistsError, NonexistentRoleError } from '@/domain/errors';
 import { HttpResponse, badRequest, forbidden, serverError, noContent } from '@/application/helpers';
-import { RequiredStringValidator, RequiredEmailValidator } from '@/application/validation';
+import { RequiredStringValidator, RequiredEmailValidator, ValidationComposite } from '@/application/validation';
 
 type HttpRequest = {
   name: string;
@@ -33,12 +33,12 @@ export class CreateUserController {
   }
 
   private validate(httpRequest: HttpRequest): Error | undefined {
-    const fields: ['name', 'email', 'password', 'role'] = ['name', 'email', 'password', 'role'];
-    for (const field of fields) {
-      const fieldMissingError = new RequiredStringValidator(httpRequest[field], field).validate();
-      if (fieldMissingError) return fieldMissingError;
-    }
-    const invalidFieldError = new RequiredEmailValidator(httpRequest.email, 'email').validate();
-    if (invalidFieldError) return invalidFieldError;
+    return new ValidationComposite([
+      new RequiredStringValidator(httpRequest.name, 'name'),
+      new RequiredStringValidator(httpRequest.email, 'email'),
+      new RequiredStringValidator(httpRequest.password, 'email'),
+      new RequiredStringValidator(httpRequest.role, 'role'),
+      new RequiredEmailValidator(httpRequest.email, 'email'),
+    ]).validate();
   }
 }
