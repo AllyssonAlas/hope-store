@@ -1,9 +1,7 @@
 import { EmailAlreadyExistsError, NonexistentRoleError } from '@/domain/errors';
 import { CreateUserController } from '@/application/controllers';
-import { ForbiddenError, ServerError } from '@/application/errors';
-import { ValidationComposite, RequiredEmailValidator, RequiredStringValidator } from '@/application/validation';
-
-jest.mock('@/application/validation/composite');
+import { ForbiddenError } from '@/application/errors';
+import { RequiredEmailValidator, RequiredStringValidator } from '@/application/validation';
 
 describe('CreateUserController', () => {
   let sut: CreateUserController;
@@ -29,23 +27,16 @@ describe('CreateUserController', () => {
     sut = new CreateUserController(createUser);
   });
 
-  it('Should return 400 if ValidationComposite returns an error', async () => {
-    const error = new Error('validation_error');
-    const ValidationCompositeSpy = jest.fn().mockImplementationOnce(() => ({
-      validate: jest.fn().mockReturnValueOnce(error),
-    }));
-    jest.mocked(ValidationComposite).mockImplementationOnce(ValidationCompositeSpy);
+  it('Should build validators correctly', async () => {
+    const validators = await sut.buildValidators(request);
 
-    const response = await sut.handle(request);
-
-    expect(ValidationComposite).toHaveBeenCalledWith([
+    expect(validators).toEqual([
       new RequiredStringValidator(request.name, 'name'),
       new RequiredStringValidator(request.email, 'email'),
       new RequiredStringValidator(request.password, 'email'),
       new RequiredStringValidator(request.role, 'role'),
       new RequiredEmailValidator(request.email, 'email'),
     ]);
-    expect(response).toEqual({ data: error, statusCode: 400 });
   });
 
   it('Should call CreateUser with correct input', async () => {
@@ -58,15 +49,6 @@ describe('CreateUserController', () => {
       role: 'any_role',
     });
     expect(createUser).toHaveBeenCalledTimes(1);
-  });
-
-  it('Should return 500 if CreateUser throws', async () => {
-    const error = new Error('create_user_error');
-    createUser.mockRejectedValueOnce(error);
-
-    const response = await sut.handle(request);
-
-    expect(response).toEqual({ data: new ServerError(error), statusCode: 500 });
   });
 
   it('Should return 403 if CreateUser throws EmailAlreadyExistsError', async () => {

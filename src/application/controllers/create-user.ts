@@ -1,7 +1,7 @@
 import { CreateUser } from '@/domain/usecases';
-import { EmailAlreadyExistsError, NonexistentRoleError } from '@/domain/errors';
-import { HttpResponse, badRequest, forbidden, serverError, noContent } from '@/application/helpers';
-import { RequiredStringValidator, RequiredEmailValidator, ValidationComposite } from '@/application/validation';
+import { HttpResponse, forbidden, noContent } from '@/application/helpers';
+import { RequiredStringValidator, RequiredEmailValidator, Validator } from '@/application/validation';
+import { Controller } from '@/application/controllers';
 
 type HttpRequest = {
   name: string;
@@ -12,33 +12,27 @@ type HttpRequest = {
 
 type Model = Error | null;
 
-export class CreateUserController {
-  constructor(private readonly createUser: CreateUser) {}
+export class CreateUserController extends Controller {
+  constructor(private readonly createUser: CreateUser) {
+    super();
+  }
 
-  async handle(httpRequest: HttpRequest):Promise<HttpResponse<Model>> {
+  async perform(httpRequest: HttpRequest):Promise<HttpResponse<Model>> {
     try {
-      const error = this.validate(httpRequest);
-      if (error) {
-        return badRequest(error);
-      }
       await this.createUser(httpRequest);
       return noContent();
     } catch (error) {
-      if (error instanceof EmailAlreadyExistsError || error instanceof NonexistentRoleError) {
-        return forbidden();
-      }
-
-      return serverError(error instanceof Error ? error : undefined);
+      return forbidden();
     }
   }
 
-  private validate(httpRequest: HttpRequest): Error | undefined {
-    return new ValidationComposite([
+  override buildValidators(httpRequest: HttpRequest): Validator[] {
+    return [
       new RequiredStringValidator(httpRequest.name, 'name'),
       new RequiredStringValidator(httpRequest.email, 'email'),
       new RequiredStringValidator(httpRequest.password, 'email'),
       new RequiredStringValidator(httpRequest.role, 'role'),
       new RequiredEmailValidator(httpRequest.email, 'email'),
-    ]).validate();
+    ];
   }
 }
