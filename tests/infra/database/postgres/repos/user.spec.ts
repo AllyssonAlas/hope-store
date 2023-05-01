@@ -50,4 +50,34 @@ describe('PgUserRepository', () => {
       expect(user).toBeNull();
     });
   });
+
+  describe('save', () => {
+    it('Should save an user with provided data', async () => {
+      await prisma.role.create({
+        data: {
+          id: 'any_role_id',
+          name: 'any_role',
+        },
+      });
+
+      await sut.save({
+        name: 'any_name',
+        email: 'any_email@mail.com',
+        password: 'any_password',
+        roleId: 'any_role_id',
+      });
+
+      const user = await prisma.user.findFirst({
+        where: {
+          email: 'any_email@mail.com',
+        },
+      });
+
+      expect(user?.id).toBeTruthy();
+      expect(user?.name).toBe('any_name');
+      expect(user?.email).toBe('any_email@mail.com');
+      expect(user?.password).toBe('any_password');
+      expect(user?.roleId).toBe('any_role_id');
+    });
+  });
 });
