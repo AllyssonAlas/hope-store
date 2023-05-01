@@ -6,7 +6,7 @@ describe('User', () => {
       name: 'any_user_name',
       email: 'any_user_email',
       password: 'any_user_password',
-      role: 'any_user_role',
+      roleId: 'any_role_id',
     };
 
     const sut = new User(userData);
@@ -15,7 +15,7 @@ describe('User', () => {
       name: 'any_user_name',
       email: 'any_user_email',
       password: 'any_user_password',
-      role: 'any_user_role',
+      roleId: 'any_role_id',
     });
   });
 });

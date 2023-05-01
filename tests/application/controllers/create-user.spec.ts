@@ -10,7 +10,7 @@ describe('CreateUserController', () => {
     name: string;
     email: string;
     password: string;
-    role: string;
+    roleId: string;
   };
 
   beforeAll(() => {
@@ -19,7 +19,7 @@ describe('CreateUserController', () => {
       name: 'any_name',
       email: 'email@mail.com',
       password: 'any_password',
-      role: 'any_role',
+      roleId: 'any_role_id',
     };
   });
 
@@ -34,7 +34,7 @@ describe('CreateUserController', () => {
       new RequiredStringValidator(request.name, 'name'),
       new RequiredStringValidator(request.email, 'email'),
       new RequiredStringValidator(request.password, 'email'),
-      new RequiredStringValidator(request.role, 'role'),
+      new RequiredStringValidator(request.roleId, 'roleId'),
       new RequiredEmailValidator(request.email, 'email'),
     ]);
   });
@@ -46,7 +46,7 @@ describe('CreateUserController', () => {
       name: 'any_name',
       email: 'email@mail.com',
       password: 'any_password',
-      role: 'any_role',
+      roleId: 'any_role_id',
     });
     expect(createUser).toHaveBeenCalledTimes(1);
   });

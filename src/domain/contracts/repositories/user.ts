@@ -16,7 +16,7 @@ export namespace LoadUserRepository {
 }
 
 export interface SaveUserRepository {
-  save: (input: SaveUserRepository.Input) => Promise<void>;
+  save: (input: SaveUserRepository.Input) => Promise<SaveUserRepository.Output>;
 }
 
 export namespace SaveUserRepository {
@@ -24,6 +24,8 @@ export namespace SaveUserRepository {
     name: string,
     email: string,
     password: string,
-    role: string,
+    roleId: string,
   };
+
+  export type Output = void
 }

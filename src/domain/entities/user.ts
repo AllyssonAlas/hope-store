@@ -2,19 +2,19 @@ type UserData = {
   name: string;
   email: string;
   password: string;
-  role: string;
+  roleId: string;
 }
 
 export class User {
   name: string;
   email: string;
   password: string;
-  role: string;
+  roleId: string;
 
   constructor(userData: UserData) {
     this.name = userData.name;
     this.email = userData.email;
     this.password = userData.password;
-    this.role = userData.role;
+    this.roleId = userData.roleId;
   }
 }
