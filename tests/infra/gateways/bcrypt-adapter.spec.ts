@@ -14,6 +14,7 @@ describe('BcryptAdapter', () => {
     plaintext = 'any_plaintext';
     salt = 12;
     fakeBcrypt = bcrypt as jest.Mocked<typeof bcrypt>;
+    fakeBcrypt.hash.mockImplementation(() => 'hashed_string');
   });
 
   beforeEach(() => {
@@ -36,6 +37,12 @@ describe('BcryptAdapter', () => {
       const promise = sut.generate({ plaintext: 'any_string' });
 
       await expect(promise).rejects.toThrow();
+    });
+
+    test('Should return a hashed string on succes', async () => {
+      const result = await sut.generate({ plaintext: 'any_string' });
+
+      expect(result).toEqual({ ciphertext: 'hashed_string' });
     });
   });
 });
