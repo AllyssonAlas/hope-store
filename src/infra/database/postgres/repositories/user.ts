@@ -1,15 +1,22 @@
 import { PrismaClient } from '@prisma/client';
 
-import { LoadUserRepository } from '@/domain/contracts/repositories';
+import { LoadUserRepository, SaveUserRepository } from '@/domain/contracts/repositories';
 
-export class PgUserRepository implements LoadUserRepository {
+export class PgUserRepository implements LoadUserRepository, SaveUserRepository {
+  private prisma = new PrismaClient();
+
   async load({ email }: LoadUserRepository.Input): Promise<LoadUserRepository.Output> {
-    const prisma = new PrismaClient();
-    const user = await prisma.user.findFirst({
+    const user = await this.prisma.user.findFirst({
       where: {
         email,
       },
     });
     return user;
+  }
+
+  async save(input: SaveUserRepository.Input): Promise<SaveUserRepository.Output> {
+    await this.prisma.user.create({
+      data: input,
+    });
   }
 }
