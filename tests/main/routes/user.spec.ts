@@ -1,7 +1,8 @@
 import request from 'supertest';
-import { app } from '@/main/config/app';
-
 import { PrismaClient } from '@prisma/client';
+
+import { app } from '@/main/config/app';
+import { ForbiddenError } from '@/application/errors';
 
 describe('User Routes', () => {
   describe('/POST /user/create', () => {
@@ -24,12 +25,15 @@ describe('User Routes', () => {
         },
       });
 
-      await request(app).post('/api/user/create').send({
+      const { body, status } = await request(app).post('/api/user/create').send({
         name: 'any_user_name',
         email: 'any_email@mail.com',
         password: 'any_password',
         role: 'any_role',
-      }).expect(204);
+      });
+
+      expect(status).toBe(204);
+      expect(body).toEqual({});
     });
 
     it('Should return 403 if an existing email is provided', async () => {
@@ -39,7 +43,6 @@ describe('User Routes', () => {
           name: 'any_role',
         },
       });
-
       await prisma.user.create({
         data: {
           name: 'any_name',
@@ -49,21 +52,27 @@ describe('User Routes', () => {
         },
       });
 
-      await request(app).post('/api/user/create').send({
+      const { body, status } = await request(app).post('/api/user/create').send({
         name: 'any_user_name',
         email: 'any_existing_email@mail.com',
         password: 'any_password',
         role: 'any_role',
-      }).expect(403);
+      });
+
+      expect(status).toBe(403);
+      expect(body).toEqual({ error: new ForbiddenError().message });
     });
   });
 
   it('Should return 403 if an unexisting role is provided', async () => {
-    await request(app).post('/api/user/create').send({
+    const { body, status } = await request(app).post('/api/user/create').send({
       name: 'any_user_name',
       email: 'any_email@mail.com',
       password: 'any_password',
       role: 'any_role',
-    }).expect(403);
+    });
+
+    expect(status).toBe(403);
+    expect(body).toEqual({ error: new ForbiddenError().message });
   });
 });
