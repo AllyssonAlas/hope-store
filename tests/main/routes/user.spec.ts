@@ -28,7 +28,7 @@ describe('User Routes', () => {
         name: 'any_user_name',
         email: 'any_email@mail.com',
         password: 'any_password',
-        roleId: 'any_role',
+        role: 'any_role',
       }).expect(204);
     });
   });

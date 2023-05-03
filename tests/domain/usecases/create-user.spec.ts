@@ -20,7 +20,7 @@ describe('CreateUser', () => {
       name: 'any_user_name',
       email: 'any_user_email',
       password: 'any_user_password',
-      roleId: 'any_role_id',
+      role: 'any_role',
     };
     hasherGenerator = mock();
     userRepository = mock();
@@ -80,7 +80,7 @@ describe('CreateUser', () => {
   it('Should call LoadRoleRepository with correct input', async () => {
     await sut(user);
 
-    expect(roleRepository.load).toHaveBeenCalledWith({ name: 'any_role_id' });
+    expect(roleRepository.load).toHaveBeenCalledWith({ name: 'any_role' });
     expect(roleRepository.load).toHaveBeenCalledTimes(1);
   });
 

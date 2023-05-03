@@ -7,7 +7,7 @@ type HttpRequest = {
   name: string;
   email: string;
   password: string;
-  roleId: string;
+  role: string;
 }
 
 type Model = Error | null;
@@ -31,7 +31,7 @@ export class CreateUserController extends Controller {
       new RequiredStringValidator(httpRequest.name, 'name'),
       new RequiredStringValidator(httpRequest.email, 'email'),
       new RequiredStringValidator(httpRequest.password, 'email'),
-      new RequiredStringValidator(httpRequest.roleId, 'roleId'),
+      new RequiredStringValidator(httpRequest.role, 'role'),
       new RequiredEmailValidator(httpRequest.email, 'email'),
     ];
   }

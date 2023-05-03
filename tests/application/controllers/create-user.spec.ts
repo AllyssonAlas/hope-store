@@ -10,7 +10,7 @@ describe('CreateUserController', () => {
     name: string;
     email: string;
     password: string;
-    roleId: string;
+    role: string;
   };
 
   beforeAll(() => {
@@ -19,7 +19,7 @@ describe('CreateUserController', () => {
       name: 'any_name',
       email: 'email@mail.com',
       password: 'any_password',
-      roleId: 'any_role_id',
+      role: 'any_role',
     };
   });
 
@@ -27,14 +27,14 @@ describe('CreateUserController', () => {
     sut = new CreateUserController(createUser);
   });
 
-  it('Should build validators correctly', async () => {
-    const validators = await sut.buildValidators(request);
+  it('Should build validators correctly', () => {
+    const validators = sut.buildValidators(request);
 
     expect(validators).toEqual([
       new RequiredStringValidator(request.name, 'name'),
       new RequiredStringValidator(request.email, 'email'),
       new RequiredStringValidator(request.password, 'email'),
-      new RequiredStringValidator(request.roleId, 'roleId'),
+      new RequiredStringValidator(request.role, 'role'),
       new RequiredEmailValidator(request.email, 'email'),
     ]);
   });
@@ -46,7 +46,7 @@ describe('CreateUserController', () => {
       name: 'any_name',
       email: 'email@mail.com',
       password: 'any_password',
-      roleId: 'any_role_id',
+      role: 'any_role',
     });
     expect(createUser).toHaveBeenCalledTimes(1);
   });
