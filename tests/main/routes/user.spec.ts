@@ -57,4 +57,13 @@ describe('User Routes', () => {
       }).expect(403);
     });
   });
+
+  it('Should return 403 if an unexisting role is provided', async () => {
+    await request(app).post('/api/user/create').send({
+      name: 'any_user_name',
+      email: 'any_email@mail.com',
+      password: 'any_password',
+      role: 'any_role',
+    }).expect(403);
+  });
 });
