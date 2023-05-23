@@ -35,6 +35,7 @@
     "lint": "yarn eslint . --ext ts",
     "lint:fix": "yarn lint -- --fix",
     "prisma:migrate": "prisma migrate dev --name init",
+    "prisma:seed": "prisma db seed",
     "test:docker-up": "docker-compose -f docker-compose-test-db.yml up -d",
     "test:docker-down": "docker-compose -f docker-compose-test-db.yml down",
     "test": "DOTENV_CONFIG_PATH=./.env.test jest --setupFiles=dotenv/config --passWithNoTests --no-cache --runInBand",
@@ -54,6 +55,7 @@
     "supertest": "^6.3.3"
   },
   "prisma": {
-    "schema": "src/infra/database/postgres/prisma/schema.prisma"
+    "schema": "src/infra/database/postgres/prisma/schema.prisma",
+    "seed": "node dist/infra/database/postgres/helpers/seed.js"
   }
 }
