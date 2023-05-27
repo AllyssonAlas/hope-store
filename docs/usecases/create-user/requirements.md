@@ -1,4 +1,4 @@
-# Create Admin User Usecase
+# Create User Usecase
 
 > ## Case of success
 1. System receives **User** data
