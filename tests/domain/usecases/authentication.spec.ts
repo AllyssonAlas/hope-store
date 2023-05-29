@@ -29,4 +29,12 @@ describe('Authentication', () => {
     expect(userRepository.load).toHaveBeenCalledWith({ email: 'any_user_email' });
     expect(userRepository.load).toHaveBeenCalledTimes(1);
   });
+
+  it('Should rethrow if LoadUserRepository throws', async () => {
+    userRepository.load.mockRejectedValueOnce(new Error('load_user_repository_error'));
+
+    const promise = sut(credentials);
+
+    await expect(promise).rejects.toThrow(new Error('load_user_repository_error'));
+  });
 });
