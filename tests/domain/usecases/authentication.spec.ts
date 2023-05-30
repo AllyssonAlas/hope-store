@@ -2,8 +2,7 @@ import { mock, MockProxy } from 'jest-mock-extended';
 
 import { setupAuthentication, Authentication } from '@/domain/usecases';
 import { LoadUserRepository } from '@/domain/contracts/repositories';
-
-jest.mock('@/domain/entities/user');
+import { InvalidCredentialsError } from '@/domain/errors';
 
 describe('Authentication', () => {
   let credentials: any;
@@ -16,7 +15,12 @@ describe('Authentication', () => {
       password: 'any_user_password',
     };
     userRepository = mock();
-    userRepository.load.mockResolvedValue(null);
+    userRepository.load.mockResolvedValue({
+      id: 'any_user_id',
+      name: 'any_user_name',
+      email: 'any_user_email',
+      roleId: 'any_user_role',
+    });
   });
 
   beforeEach(() => {
@@ -36,5 +40,13 @@ describe('Authentication', () => {
     const promise = sut(credentials);
 
     await expect(promise).rejects.toThrow(new Error('load_user_repository_error'));
+  });
+
+  it('Should throw InvalidCredentialsError if LoadUserRepository returns null', async () => {
+    userRepository.load.mockResolvedValueOnce(null);
+
+    const promise = sut(credentials);
+
+    await expect(promise).rejects.toThrow(new InvalidCredentialsError());
   });
 });
