@@ -25,6 +25,7 @@ describe('Authentication', () => {
       roleId: 'any_user_role',
     });
     hasherComparer = mock();
+    hasherComparer.compare.mockResolvedValue({ isValid: true });
   });
 
   beforeEach(() => {
@@ -70,5 +71,13 @@ describe('Authentication', () => {
     const promise = sut(credentials);
 
     await expect(promise).rejects.toThrow(new Error('hasher_comparer_error'));
+  });
+
+  it('Should throw InvalidCredentialsError if HasherComparer isValid false', async () => {
+    hasherComparer.compare.mockResolvedValueOnce({ isValid: false });
+
+    const promise = sut(credentials);
+
+    await expect(promise).rejects.toThrow(new InvalidCredentialsError());
   });
 });
