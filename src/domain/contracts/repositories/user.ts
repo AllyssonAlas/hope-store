@@ -12,6 +12,7 @@ export namespace LoadUserRepository {
     name: string,
     email: string,
     roleId: string,
+    password: string,
   } | null;
 }
 
