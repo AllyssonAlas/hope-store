@@ -11,3 +11,18 @@ export namespace HasherGenerator {
     ciphertext: string;
   };
 }
+
+export interface HasherComparer {
+  compare: (input: HasherComparer.Input) => Promise<HasherComparer.Output>;
+}
+
+export namespace HasherComparer {
+  export type Input = {
+    plaintext: string;
+    digest: string;
+  };
+
+  export type Output = {
+    isValid: boolean;
+  };
+}
