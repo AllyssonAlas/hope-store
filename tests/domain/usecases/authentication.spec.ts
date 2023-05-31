@@ -2,10 +2,12 @@ import { mock, MockProxy } from 'jest-mock-extended';
 
 import { setupAuthentication, Authentication } from '@/domain/usecases';
 import { LoadUserRepository } from '@/domain/contracts/repositories';
+import { HasherComparer } from '@/domain/contracts/gateways';
 import { InvalidCredentialsError } from '@/domain/errors';
 
 describe('Authentication', () => {
   let credentials: any;
+  let hasherComparer: MockProxy<HasherComparer>;
   let userRepository: MockProxy<LoadUserRepository>;
   let sut: Authentication;
 
@@ -19,12 +21,14 @@ describe('Authentication', () => {
       id: 'any_user_id',
       name: 'any_user_name',
       email: 'any_user_email',
+      password: 'any_hashed_password',
       roleId: 'any_user_role',
     });
+    hasherComparer = mock();
   });
 
   beforeEach(() => {
-    sut = setupAuthentication(userRepository);
+    sut = setupAuthentication(userRepository, hasherComparer);
   });
 
   it('Should call LoadUserRepository with correct input', async () => {
@@ -48,5 +52,15 @@ describe('Authentication', () => {
     const promise = sut(credentials);
 
     await expect(promise).rejects.toThrow(new InvalidCredentialsError());
+  });
+
+  it('Should call HasherComparer with correct input', async () => {
+    await sut(credentials);
+
+    expect(hasherComparer.compare).toHaveBeenCalledWith({
+      plaintext: 'any_user_password',
+      digest: 'any_hashed_password',
+    });
+    expect(hasherComparer.compare).toHaveBeenCalledTimes(1);
   });
 });
