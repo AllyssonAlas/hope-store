@@ -63,4 +63,12 @@ describe('Authentication', () => {
     });
     expect(hasherComparer.compare).toHaveBeenCalledTimes(1);
   });
+
+  it('Should rethrow if HasherComparer throws', async () => {
+    hasherComparer.compare.mockRejectedValueOnce(new Error('hasher_comparer_error'));
+
+    const promise = sut(credentials);
+
+    await expect(promise).rejects.toThrow(new Error('hasher_comparer_error'));
+  });
 });
