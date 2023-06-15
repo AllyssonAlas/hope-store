@@ -10,5 +10,6 @@ export namespace LoadRoleRepository {
   export type Output = {
     id: string,
     name: string,
+    permissions: string[];
   } | null;
 }

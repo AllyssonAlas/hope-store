@@ -11,20 +11,31 @@ datasource db {
 }
 
 model User {
-  id          String     @id @default(uuid())
-  name        String
-  email       String     @unique
-  password    String
-  role        Role       @relation(fields: [roleId], references: [id])
-  roleId      String
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @default(now())
+  id                String        @id @default(uuid())
+  name              String
+  email             String        @unique
+  password          String
+  role              Role          @relation(fields: [roleId], references: [id])
+  roleId            String
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @default(now())
 }
 
 model Role {
-  id          String     @id @default(uuid())
-  name        String     @unique
-  users       User[]
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @default(now())
+  id                String        @id @default(uuid())
+  name              String        @unique
+  users             User[]
+  permissions       Permission[]
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @default(now())
 }
+
+
+model Permission {
+  id                String        @id @default(uuid())
+  name              String        @unique
+  roles             Role[]
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @default(now())
+}
+

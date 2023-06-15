@@ -26,7 +26,11 @@ describe('CreateUser', () => {
     userRepository = mock();
     roleRepository = mock();
     userRepository.load.mockResolvedValue(null);
-    roleRepository.load.mockResolvedValue({ id: 'any_role_id', name: 'any_role_name' });
+    roleRepository.load.mockResolvedValue({
+      id: 'any_role_id',
+      name: 'any_role_name',
+      permissions: ['any_permission'],
+    });
     hasherGenerator.generate.mockResolvedValue({ ciphertext: 'any_hashed_password' });
   });
 

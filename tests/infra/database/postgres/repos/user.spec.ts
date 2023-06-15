@@ -17,6 +17,7 @@ describe('PgUserRepository', () => {
   afterEach(async () => {
     await prisma.user.deleteMany({});
     await prisma.role.deleteMany({});
+    await prisma.permission.deleteMany({});
   });
 
   describe('load', () => {
@@ -25,6 +26,9 @@ describe('PgUserRepository', () => {
         data: {
           id: 'any_role_id',
           name: 'any_role',
+          permissions: {
+            create: [{ name: 'any_permission_1' }, { name: 'any_permission_2' }],
+          },
         },
       });
 
