@@ -1,12 +1,12 @@
-import { LoadUserRepository } from '@/domain/contracts/repositories';
+import { LoadUserRepository, LoadRoleRepository } from '@/domain/contracts/repositories';
 import { HasherComparer } from '@/domain/contracts/gateways';
 import { InvalidCredentialsError } from '@/domain/errors';
 
 type Input = { email: string, password: string }
 export type Authentication = (input: Input) => Promise<void>
-type Setup = (userRepo: LoadUserRepository, hasher: HasherComparer) => Authentication
+type Setup = (userRepo: LoadUserRepository, hasher: HasherComparer, roleRepo: LoadRoleRepository) => Authentication
 
-export const setupAuthentication: Setup = (userRepo, hasher) => {
+export const setupAuthentication: Setup = (userRepo, hasher, roleRepo) => {
   return async ({ email, password }) => {
     const user = await userRepo.load({ email });
     if (!user) {
@@ -16,5 +16,6 @@ export const setupAuthentication: Setup = (userRepo, hasher) => {
     if (!isValid) {
       throw new InvalidCredentialsError();
     }
+    await roleRepo.load({ name: user.role });
   };
 };
