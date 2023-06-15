@@ -11,7 +11,7 @@ export namespace LoadUserRepository {
     id: string,
     name: string,
     email: string,
-    roleId: string,
+    role: string,
     password: string,
   } | null;
 }
@@ -25,7 +25,7 @@ export namespace SaveUserRepository {
     name: string,
     email: string,
     password: string,
-    roleId: string,
+    role: string,
   };
 
   export type Output = void

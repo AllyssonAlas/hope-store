@@ -25,7 +25,7 @@ describe('PgUserRepository', () => {
       await prisma.role.create({
         data: {
           id: 'any_role_id',
-          name: 'any_role',
+          name: 'any_role_name',
           permissions: {
             create: [{ name: 'any_permission_1' }, { name: 'any_permission_2' }],
           },
@@ -37,7 +37,7 @@ describe('PgUserRepository', () => {
           name: 'any_name',
           email: 'any_existing_email@mail.com',
           password: 'any_password',
-          roleId: 'any_role_id',
+          role: 'any_role_name',
         },
       });
 
@@ -60,7 +60,7 @@ describe('PgUserRepository', () => {
       await prisma.role.create({
         data: {
           id: 'any_role_id',
-          name: 'any_role',
+          name: 'any_role_name',
         },
       });
 
@@ -68,7 +68,7 @@ describe('PgUserRepository', () => {
         name: 'any_name',
         email: 'any_email@mail.com',
         password: 'any_password',
-        roleId: 'any_role_id',
+        role: 'any_role_name',
       });
 
       const user = await prisma.user.findFirst({
@@ -81,7 +81,7 @@ describe('PgUserRepository', () => {
       expect(user?.name).toBe('any_name');
       expect(user?.email).toBe('any_email@mail.com');
       expect(user?.password).toBe('any_password');
-      expect(user?.roleId).toBe('any_role_id');
+      expect(user?.role).toBe('any_role_name');
     });
   });
 });

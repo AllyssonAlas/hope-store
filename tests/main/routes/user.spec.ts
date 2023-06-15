@@ -15,13 +15,15 @@ describe('User Routes', () => {
     afterEach(async () => {
       await prisma.user.deleteMany({});
       await prisma.role.deleteMany({});
+      await prisma.permission.deleteMany({});
     });
 
     it('Should return 204 on success', async () => {
       await prisma.role.create({
         data: {
           id: 'any_role_id',
-          name: 'any_role',
+          name: 'any_role_name',
+
         },
       });
 
@@ -29,7 +31,7 @@ describe('User Routes', () => {
         name: 'any_user_name',
         email: 'any_email@mail.com',
         password: 'any_password',
-        role: 'any_role',
+        role: 'any_role_name',
       });
 
       expect(status).toBe(204);
@@ -40,7 +42,7 @@ describe('User Routes', () => {
       await prisma.role.create({
         data: {
           id: 'any_role_id',
-          name: 'any_role',
+          name: 'any_role_name',
         },
       });
       await prisma.user.create({
@@ -48,7 +50,7 @@ describe('User Routes', () => {
           name: 'any_name',
           email: 'any_existing_email@mail.com',
           password: 'any_password',
-          roleId: 'any_role_id',
+          role: 'any_role_name',
         },
       });
 
@@ -56,7 +58,7 @@ describe('User Routes', () => {
         name: 'any_user_name',
         email: 'any_existing_email@mail.com',
         password: 'any_password',
-        role: 'any_role',
+        role: 'any_role_name',
       });
 
       expect(status).toBe(403);

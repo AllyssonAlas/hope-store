@@ -22,7 +22,7 @@ export const setupCreateUser: Setup = (userRepo, roleRepo, hasher) => {
       throw new NonexistentRoleError();
     }
     const { ciphertext } = await hasher.generate({ plaintext: password });
-    const userData = new User({ ...inputData, roleId: roleData.id, password: ciphertext, email });
+    const userData = new User({ ...inputData, role: roleData.name, password: ciphertext, email });
     await userRepo.save(userData);
   };
 };
