@@ -30,7 +30,7 @@ export class CreateUserController extends Controller {
     return [
       new RequiredStringValidator(httpRequest.name, 'name'),
       new RequiredStringValidator(httpRequest.email, 'email'),
-      new RequiredStringValidator(httpRequest.password, 'email'),
+      new RequiredStringValidator(httpRequest.password, 'password'),
       new RequiredStringValidator(httpRequest.role, 'role'),
       new RequiredEmailValidator(httpRequest.email, 'email'),
     ];
