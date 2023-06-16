@@ -32,6 +32,7 @@ describe('Authentication', () => {
     roleRepository = mock();
     roleRepository.load.mockResolvedValue({ id: 'any_role_id', name: 'any_role_name', permissions: ['any_permissions'] });
     authToken = mock();
+    authToken.generate.mockResolvedValue({ token: 'any_token' });
   });
 
   beforeEach(() => {
@@ -120,5 +121,15 @@ describe('Authentication', () => {
     const promise = sut(credentials);
 
     await expect(promise).rejects.toThrow(new Error('jwt_token_generator_error'));
+  });
+
+  it('Should return correct output on success', async () => {
+    const result = await sut(credentials);
+
+    expect(result).toEqual({
+      authToken: 'any_token',
+      name: 'any_user_name',
+      email: 'any_user_email',
+    });
   });
 });
