@@ -90,4 +90,12 @@ describe('Authentication', () => {
     expect(roleRepository.load).toHaveBeenCalledWith({ name: 'any_user_role' });
     expect(roleRepository.load).toHaveBeenCalledTimes(1);
   });
+
+  it('Should rethrow if LoadRoleRepository throws', async () => {
+    roleRepository.load.mockRejectedValueOnce(new Error('role_repository_error'));
+
+    const promise = sut(credentials);
+
+    await expect(promise).rejects.toThrow(new Error('role_repository_error'));
+  });
 });
