@@ -4,7 +4,8 @@ import { HasherComparer, JwtTokenGenerator } from '@/domain/contracts/gateways';
 import { InvalidCredentialsError } from '@/domain/errors';
 
 type Input = { email: string, password: string }
-export type Authentication = (input: Input) => Promise<void>
+type Output = { authToken: string, email: string, name: string }
+export type Authentication = (input: Input) => Promise<Output>
 type Setup = (
   userRepo: LoadUserRepository,
   hasher: HasherComparer,
@@ -23,13 +24,16 @@ export const setupAuthentication: Setup = (userRepo, hasher, roleRepo, authToken
       throw new InvalidCredentialsError();
     }
     const role = await roleRepo.load({ name: user.role });
-    if (role) {
-      await authToken.generate({
-        id: user.id,
-        role: role?.name,
-        permissions: role?.permissions,
-        expirationInMs: AuthToken.expirationInMs,
-      });
-    }
+    const { token } = await authToken.generate({
+      id: user.id,
+      role: role!.name,
+      permissions: role!.permissions,
+      expirationInMs: AuthToken.expirationInMs,
+    });
+    return {
+      authToken: token,
+      name: user.name,
+      email: user.email,
+    };
   };
 };

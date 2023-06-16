@@ -1,5 +1,5 @@
 export interface JwtTokenGenerator {
-  generate: (input: JwtTokenGenerator.Input) => Promise<void>;
+  generate: (input: JwtTokenGenerator.Input) => Promise<JwtTokenGenerator.Output>;
 }
 
 export namespace JwtTokenGenerator {
@@ -8,5 +8,9 @@ export namespace JwtTokenGenerator {
     role: string
     permissions: string[]
     expirationInMs: number
+  };
+
+  export type Output = {
+    token: string
   };
 }
