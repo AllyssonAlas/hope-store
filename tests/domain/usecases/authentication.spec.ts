@@ -113,4 +113,12 @@ describe('Authentication', () => {
     });
     expect(authToken.generate).toHaveBeenCalledTimes(1);
   });
+
+  it('Should rethrow if JwtTokenGenerator throws', async () => {
+    authToken.generate.mockRejectedValueOnce(new Error('jwt_token_generator_error'));
+
+    const promise = sut(credentials);
+
+    await expect(promise).rejects.toThrow(new Error('jwt_token_generator_error'));
+  });
 });
