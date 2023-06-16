@@ -1,3 +1,4 @@
+import { AuthToken } from '@/domain/entities';
 import { LoadUserRepository, LoadRoleRepository } from '@/domain/contracts/repositories';
 import { HasherComparer, JwtTokenGenerator } from '@/domain/contracts/gateways';
 import { InvalidCredentialsError } from '@/domain/errors';
@@ -27,7 +28,7 @@ export const setupAuthentication: Setup = (userRepo, hasher, roleRepo, authToken
         id: user.id,
         role: role?.name,
         permissions: role?.permissions,
-        expirationInMs: 60 * 60 * 1000,
+        expirationInMs: AuthToken.expirationInMs,
       });
     }
   };

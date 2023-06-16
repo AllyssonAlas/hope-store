@@ -1,6 +1,7 @@
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { setupAuthentication, Authentication } from '@/domain/usecases';
+import { AuthToken } from '@/domain/entities';
 import { LoadUserRepository, LoadRoleRepository } from '@/domain/contracts/repositories';
 import { HasherComparer, JwtTokenGenerator } from '@/domain/contracts/gateways';
 import { InvalidCredentialsError } from '@/domain/errors';
@@ -108,7 +109,7 @@ describe('Authentication', () => {
       id: 'any_user_id',
       role: 'any_role_name',
       permissions: ['any_permissions'],
-      expirationInMs: 60 * 60 * 1000,
+      expirationInMs: AuthToken.expirationInMs,
     });
     expect(authToken.generate).toHaveBeenCalledTimes(1);
   });
