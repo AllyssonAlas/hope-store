@@ -15,6 +15,7 @@ describe('BcryptAdapter', () => {
     salt = 12;
     fakeBcrypt = bcrypt as jest.Mocked<typeof bcrypt>;
     fakeBcrypt.hash.mockImplementation(() => 'hashed_string');
+    fakeBcrypt.compare.mockImplementation(() => true);
   });
 
   beforeEach(() => {
@@ -69,6 +70,12 @@ describe('BcryptAdapter', () => {
       const { isValid } = await sut.compare({ plaintext: 'any_value', digest: 'any_digest' });
 
       expect(isValid).toBe(false);
+    });
+
+    test('Should return isValid true on success', async () => {
+      const { isValid } = await sut.compare({ plaintext: 'any_value', digest: 'any_digest' });
+
+      expect(isValid).toBe(true);
     });
   });
 });
