@@ -45,4 +45,11 @@ describe('BcryptAdapter', () => {
       expect(result).toEqual({ ciphertext: 'hashed_string' });
     });
   });
+
+  describe('compare()', () => {
+    test('Should call compare with correct values', async () => {
+      await sut.compare({ plaintext: 'any_value', digest: 'any_digest' });
+      expect(fakeBcrypt.compare).toBeCalledWith('any_value', 'any_digest');
+    });
+  });
 });
