@@ -49,6 +49,7 @@ describe('BcryptAdapter', () => {
   describe('compare()', () => {
     test('Should call compare with correct values', async () => {
       await sut.compare({ plaintext: 'any_value', digest: 'any_digest' });
+
       expect(fakeBcrypt.compare).toBeCalledWith('any_value', 'any_digest');
     });
 
@@ -60,6 +61,14 @@ describe('BcryptAdapter', () => {
       const promise = sut.compare({ plaintext: 'any_value', digest: 'any_digest' });
 
       await expect(promise).rejects.toThrow();
+    });
+
+    test('Should return isValid false when compare fails', async () => {
+      jest.spyOn(bcrypt, 'compare').mockImplementationOnce(() => false);
+
+      const { isValid } = await sut.compare({ plaintext: 'any_value', digest: 'any_digest' });
+
+      expect(isValid).toBe(false);
     });
   });
 });
