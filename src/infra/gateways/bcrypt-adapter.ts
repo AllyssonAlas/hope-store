@@ -11,7 +11,8 @@ export class BcryptAdapter implements HasherGenerator {
     return { ciphertext };
   }
 
-  async compare({ plaintext, digest }: HasherComparer.Input): Promise<void> {
-    await bcrypt.compare(plaintext, digest);
+  async compare({ plaintext, digest }: HasherComparer.Input): Promise<HasherComparer.Output> {
+    const isValid = await bcrypt.compare(plaintext, digest);
+    return { isValid };
   }
 }
