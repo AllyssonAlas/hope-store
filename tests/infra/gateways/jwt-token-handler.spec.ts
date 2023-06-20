@@ -37,5 +37,15 @@ describe('JwtTokenHandler', () => {
       expect(fakeJwt.sign).toHaveBeenCalledWith({ id, role, permissions }, secret, { expiresIn: 1 });
       expect(fakeJwt.sign).toHaveBeenCalledTimes(1);
     });
+
+    test('Should throw if sign throws', async () => {
+      jest.spyOn(jwt, 'sign').mockImplementationOnce(() => {
+        throw new Error();
+      });
+
+      const promise = sut.generate({ id, role, permissions, expirationInMs });
+
+      await expect(promise).rejects.toThrow();
+    });
   });
 });
