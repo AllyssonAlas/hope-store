@@ -5,6 +5,7 @@ import { JwtTokenHandler } from '@/infra/gateways';
 jest.mock('jsonwebtoken');
 
 describe('JwtTokenHandler', () => {
+  let token: string;
   let permissions: string[];
   let role: string;
   let id: string;
@@ -18,6 +19,7 @@ describe('JwtTokenHandler', () => {
     id = 'any_id';
     role = 'any_role';
     permissions = ['any_permission'];
+    token = 'any_token';
   });
 
   beforeEach(() => {
@@ -29,6 +31,7 @@ describe('JwtTokenHandler', () => {
 
     beforeAll(() => {
       expirationInMs = 1000;
+      fakeJwt.sign.mockImplementation(() => token);
     });
 
     it('Should call sign with correct input', async () => {
@@ -46,6 +49,12 @@ describe('JwtTokenHandler', () => {
       const promise = sut.generate({ id, role, permissions, expirationInMs });
 
       await expect(promise).rejects.toThrow();
+    });
+
+    it('Should return a token', async () => {
+      const generatedKey = await sut.generate({ id, role, permissions, expirationInMs });
+
+      expect(generatedKey).toBe(token);
     });
   });
 });
