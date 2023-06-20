@@ -6,9 +6,11 @@ jest.mock('jsonwebtoken');
 
 describe('JwtTokenHandler', () => {
   let token: string;
-  let permissions: string[];
-  let role: string;
-  let id: string;
+  let tokenData: {
+    id: string;
+    role: string;
+    permissions: string[];
+  };
   let secret: string;
   let fakeJwt: jest.Mocked<typeof jwt>;
   let sut: JwtTokenHandler;
@@ -16,9 +18,12 @@ describe('JwtTokenHandler', () => {
   beforeAll(() => {
     fakeJwt = jwt as jest.Mocked<typeof jwt>;
     secret = 'any_secret';
-    id = 'any_id';
-    role = 'any_role';
-    permissions = ['any_permission'];
+    tokenData = {
+      id: 'any_id',
+      role: 'any_role',
+      permissions: ['any_permission'],
+    };
+
     token = 'any_token';
   });
 
@@ -35,9 +40,9 @@ describe('JwtTokenHandler', () => {
     });
 
     it('Should call sign with correct input', async () => {
-      await sut.generate({ id, role, permissions, expirationInMs });
+      await sut.generate({ ...tokenData, expirationInMs });
 
-      expect(fakeJwt.sign).toHaveBeenCalledWith({ id, role, permissions }, secret, { expiresIn: 1 });
+      expect(fakeJwt.sign).toHaveBeenCalledWith(tokenData, secret, { expiresIn: 1 });
       expect(fakeJwt.sign).toHaveBeenCalledTimes(1);
     });
 
@@ -46,13 +51,13 @@ describe('JwtTokenHandler', () => {
         throw new Error();
       });
 
-      const promise = sut.generate({ id, role, permissions, expirationInMs });
+      const promise = sut.generate({ ...tokenData, expirationInMs });
 
       await expect(promise).rejects.toThrow();
     });
 
     it('Should return a token', async () => {
-      const generatedKey = await sut.generate({ id, role, permissions, expirationInMs });
+      const generatedKey = await sut.generate({ ...tokenData, expirationInMs });
 
       expect(generatedKey).toBe(token);
     });
