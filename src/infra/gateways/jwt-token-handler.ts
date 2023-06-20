@@ -7,6 +7,6 @@ export class JwtTokenHandler {
 
   async generate({ id, role, permissions, expirationInMs }:JwtTokenGenerator.Input) {
     const expirationInSeconds = expirationInMs / 1000;
-    sign({ id, role, permissions }, this.secret, { expiresIn: expirationInSeconds });
+    return sign({ id, role, permissions }, this.secret, { expiresIn: expirationInSeconds });
   }
 }
