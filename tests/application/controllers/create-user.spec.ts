@@ -16,7 +16,11 @@ describe('CreateUserController', () => {
 
   beforeAll(() => {
     createUser = jest.fn();
-    authentication = jest.fn();
+    authentication = jest.fn().mockResolvedValue({
+      authToken: 'any_token',
+      name: 'any_name',
+      email: 'email@mail.com',
+    });
     request = {
       name: 'any_name',
       email: 'email@mail.com',
@@ -79,9 +83,16 @@ describe('CreateUserController', () => {
     expect(authentication).toHaveBeenCalledTimes(1);
   });
 
-  it('Should return 204 on success', async () => {
+  it('Should return 200 on success', async () => {
     const response = await sut.handle(request);
 
-    expect(response).toEqual({ data: null, statusCode: 204 });
+    expect(response).toEqual({
+      data: {
+        authToken: 'any_token',
+        name: 'any_name',
+        email: 'email@mail.com',
+      },
+      statusCode: 200,
+    });
   });
 });
