@@ -1,4 +1,4 @@
-import { CreateUser } from '@/domain/usecases';
+import { CreateUser, Authentication } from '@/domain/usecases';
 import { HttpResponse, forbidden, noContent } from '@/application/helpers';
 import { RequiredStringValidator, RequiredEmailValidator, Validator } from '@/application/validation';
 import { Controller } from '@/application/controllers';
@@ -13,13 +13,18 @@ type HttpRequest = {
 type Model = Error | null;
 
 export class CreateUserController extends Controller {
-  constructor(private readonly createUser: CreateUser) {
+  constructor(
+    private readonly createUser: CreateUser,
+    private readonly authentication: Authentication,
+  ) {
     super();
   }
 
   async perform(httpRequest: HttpRequest):Promise<HttpResponse<Model>> {
     try {
+      const { email, password } = httpRequest;
       await this.createUser(httpRequest);
+      await this.authentication({ email, password });
       return noContent();
     } catch (error) {
       return forbidden();
