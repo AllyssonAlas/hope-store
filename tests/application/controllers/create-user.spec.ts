@@ -6,6 +6,7 @@ import { RequiredEmailValidator, RequiredStringValidator } from '@/application/v
 describe('CreateUserController', () => {
   let sut: CreateUserController;
   let createUser: jest.Mock;
+  let authentication: jest.Mock;
   let request: {
     name: string;
     email: string;
@@ -15,6 +16,7 @@ describe('CreateUserController', () => {
 
   beforeAll(() => {
     createUser = jest.fn();
+    authentication = jest.fn();
     request = {
       name: 'any_name',
       email: 'email@mail.com',
@@ -24,7 +26,7 @@ describe('CreateUserController', () => {
   });
 
   beforeEach(() => {
-    sut = new CreateUserController(createUser);
+    sut = new CreateUserController(createUser, authentication);
   });
 
   it('Should build validators correctly', () => {
@@ -65,6 +67,16 @@ describe('CreateUserController', () => {
     const response = await sut.handle(request);
 
     expect(response).toEqual({ data: new ForbiddenError(), statusCode: 403 });
+  });
+
+  it('Should call Authentication with correct input', async () => {
+    await sut.handle(request);
+
+    expect(authentication).toHaveBeenCalledWith({
+      email: 'email@mail.com',
+      password: 'any_password',
+    });
+    expect(authentication).toHaveBeenCalledTimes(1);
   });
 
   it('Should return 204 on success', async () => {
