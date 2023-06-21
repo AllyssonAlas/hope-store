@@ -1,5 +1,5 @@
 import { CreateUser, Authentication } from '@/domain/usecases';
-import { HttpResponse, forbidden, noContent } from '@/application/helpers';
+import { HttpResponse, forbidden, ok } from '@/application/helpers';
 import { RequiredStringValidator, RequiredEmailValidator, Validator } from '@/application/validation';
 import { Controller } from '@/application/controllers';
 
@@ -10,7 +10,11 @@ type HttpRequest = {
   role: string;
 }
 
-type Model = Error | null;
+type Model = {
+  authToken: string
+  email: string
+  name: string
+} | Error ;
 
 export class CreateUserController extends Controller {
   constructor(
@@ -24,8 +28,8 @@ export class CreateUserController extends Controller {
     try {
       const { email, password } = httpRequest;
       await this.createUser(httpRequest);
-      await this.authentication({ email, password });
-      return noContent();
+      const user = await this.authentication({ email, password });
+      return ok(user);
     } catch (error) {
       return forbidden();
     }
