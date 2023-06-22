@@ -1,7 +1,10 @@
 import request from 'supertest';
+import { sign } from 'jsonwebtoken';
 import { PrismaClient } from '@prisma/client';
 
+import { AuthToken } from '@/domain/entities';
 import { app } from '@/main/config/app';
+import { env } from '@/main/config/env';
 import { ForbiddenError } from '@/application/errors';
 
 describe('User Routes', () => {
@@ -18,12 +21,17 @@ describe('User Routes', () => {
       await prisma.permission.deleteMany({});
     });
 
-    it('Should return 204 on success', async () => {
+    it('Should return 200 on success', async () => {
       await prisma.role.create({
         data: {
           id: 'any_role_id',
           name: 'any_role_name',
-
+          permissions: {
+            create: [
+              { name: 'any_permission_1' },
+              { name: 'any_permission_2' },
+            ],
+          },
         },
       });
 
@@ -34,8 +42,20 @@ describe('User Routes', () => {
         role: 'any_role_name',
       });
 
-      expect(status).toBe(204);
-      expect(body).toEqual({});
+      const newUser = await prisma.user.findFirst({ where: { email: 'any_email@mail.com' } });
+
+      const authToken = sign({
+        id: newUser?.id,
+        role: 'any_role_name',
+        permissions: ['any_permission_1', 'any_permission_2'],
+      }, env.jwtSecret, { expiresIn: AuthToken.expirationInMs / 1000 });
+
+      expect(status).toBe(200);
+      expect(body).toEqual({
+        authToken,
+        name: 'any_user_name',
+        email: 'any_email@mail.com',
+      });
     });
 
     it('Should return 403 if an existing email is provided', async () => {
