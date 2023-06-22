@@ -59,7 +59,7 @@ describe('JwtTokenHandler', () => {
     it('Should return a token', async () => {
       const generatedKey = await sut.generate({ ...tokenData, expirationInMs });
 
-      expect(generatedKey).toBe(token);
+      expect(generatedKey).toEqual({ token });
     });
   });
 });
