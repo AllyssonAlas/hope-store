@@ -35,4 +35,12 @@ describe('CreateProduct', () => {
     });
     expect(productRepository.create).toHaveBeenCalledTimes(1);
   });
+
+  it('Should rethrow if LoadUserRepository throws', async () => {
+    productRepository.create.mockRejectedValueOnce(new Error('create_product_repository_error'));
+
+    const promise = sut(product);
+
+    await expect(promise).rejects.toThrow(new Error('create_product_repository_error'));
+  });
 });
