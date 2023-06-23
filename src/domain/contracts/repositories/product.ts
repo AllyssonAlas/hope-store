@@ -8,6 +8,6 @@ export namespace CreateProductRepository {
     description: string
     price: number
     quantity: number
-    created_by: string
+    createdBy: string
   }
 }

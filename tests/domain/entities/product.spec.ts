@@ -7,7 +7,7 @@ describe('Product', () => {
       description: 'any_product_description',
       price: 1,
       quantity: 1,
-      created_by: 'any_user_id',
+      createdBy: 'any_user_id',
     };
 
     const sut = new Product(userData);
@@ -17,7 +17,7 @@ describe('Product', () => {
       description: 'any_product_description',
       price: 1,
       quantity: 1,
-      created_by: 'any_user_id',
+      createdBy: 'any_user_id',
     });
   });
 });

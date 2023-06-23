@@ -14,7 +14,7 @@ describe('CreateProduct', () => {
       description: 'any_product_description',
       price: 10,
       quantity: 2,
-      created_by: 'any_user_id',
+      createdBy: 'any_user_id',
     };
     productRepository = mock();
   });
@@ -31,7 +31,7 @@ describe('CreateProduct', () => {
       description: 'any_product_description',
       price: 10,
       quantity: 2,
-      created_by: 'any_user_id',
+      createdBy: 'any_user_id',
     });
     expect(productRepository.create).toHaveBeenCalledTimes(1);
   });
