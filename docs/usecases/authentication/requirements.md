@@ -15,6 +15,9 @@
 2. System invalidates data
 3. System returns an invalid data error to the requester
 
+> ## Exception - Email does not exist
+4. System does not find user email
+5. System returns an unauthorized error to the requester
 > ## Exception - Incorrect password
 4. System invalidate user password with hash stored in database
 5. System returns an unauthorized error to the requester
