@@ -1,4 +1,5 @@
 
+import { Product } from '@/domain/entities';
 import { CreateProductRepository } from '@/domain/contracts/repositories';
 
 type Input = {
@@ -13,6 +14,7 @@ type Setup = (productRepo: CreateProductRepository) => CreateProduct
 
 export const setupCreateProduct: Setup = (productRepo) => {
   return async (input) => {
-    await productRepo.create(input);
+    const product = new Product(input);
+    await productRepo.create(product);
   };
 };
