@@ -5,6 +5,5 @@
 - description: string
 - price: number
 - quantity: number
-- createdBy: uuid
 - created_at: date
 - updated_at: date

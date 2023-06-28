@@ -7,7 +7,6 @@ type Input = {
   description: string,
   price: number,
   quantity: number,
-  createdBy: string,
 }
 export type CreateProduct = (input: Input) => Promise<void>
 type Setup = (productRepo: CreateProductRepository) => CreateProduct

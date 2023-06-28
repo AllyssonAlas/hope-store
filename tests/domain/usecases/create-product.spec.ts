@@ -17,7 +17,6 @@ describe('CreateProduct', () => {
       description: 'any_product_description',
       price: 10,
       quantity: 2,
-      createdBy: 'any_user_id',
     };
     productRepository = mock();
   });
