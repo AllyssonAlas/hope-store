@@ -39,3 +39,13 @@ model Permission {
   updatedAt         DateTime      @default(now())
 }
 
+
+model Product {
+  id                String        @id @default(uuid())
+  name              String
+  description       String
+  price             Decimal       @db.Money
+  quantity          Int
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @default(now())
+}
