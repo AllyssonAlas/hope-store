@@ -25,4 +25,12 @@ describe('RequiredNumberValidator', () => {
 
     expect(error).toEqual(new RequiredParamError('any_field_name'));
   });
+
+  it('Should return undefined if value is a number', () => {
+    const sut = new RequiredNumberValidator(10, 'any_field_name');
+
+    const error = sut.validate();
+
+    expect(error).toBeUndefined();
+  });
 });
