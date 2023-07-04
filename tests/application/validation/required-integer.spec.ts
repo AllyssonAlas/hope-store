@@ -33,4 +33,12 @@ describe('RequiredIntegerValidator', () => {
 
     expect(error).toEqual(new RequiredParamError('any_field_name'));
   });
+
+  it('Should return undefined if value is an integer', () => {
+    const sut = new RequiredIntegerValidator(10, 'any_field_name');
+
+    const error = sut.validate();
+
+    expect(error).toBeUndefined();
+  });
 });
