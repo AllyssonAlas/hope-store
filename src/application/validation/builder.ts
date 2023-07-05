@@ -1,5 +1,6 @@
 import {
   RequiredStringValidator,
+  RequiredEmailValidator,
   RequiredNumberValidator,
   RequiredIntegerValidator,
   Validator,
@@ -24,6 +25,11 @@ export class ValidationBuilder {
     } else if (valitorType === 'integer') {
       this.validators.push(new RequiredIntegerValidator(this.value, this.fieldName));
     }
+    return this;
+  }
+
+  email(): ValidationBuilder {
+    this.validators.push(new RequiredEmailValidator(this.value, this.fieldName));
     return this;
   }
 
