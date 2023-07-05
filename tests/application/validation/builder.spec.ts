@@ -1,8 +1,9 @@
 
 import {
   RequiredStringValidator,
-  RequiredNumberValidator,
   RequiredEmailValidator,
+  RequiredMinLengthValidator,
+  RequiredNumberValidator,
   RequiredIntegerValidator,
   ValidationBuilder,
 } from '@/application/validation';
@@ -27,6 +28,19 @@ describe('ValidationBuilder', () => {
     expect(validators).toEqual([
       new RequiredStringValidator('any_value', 'any_name'),
       new RequiredEmailValidator('any_value', 'any_name'),
+    ]);
+  });
+
+  it('Should return a RequiredStringValidator and a RequiredMinLengthValidator', () => {
+    const validators = ValidationBuilder
+      .of({ value: 'any_value', fieldName: 'any_name' })
+      .required('string')
+      .minLength(15)
+      .build();
+
+    expect(validators).toEqual([
+      new RequiredStringValidator('any_value', 'any_name'),
+      new RequiredMinLengthValidator(15, 'any_value', 'any_name'),
     ]);
   });
 
