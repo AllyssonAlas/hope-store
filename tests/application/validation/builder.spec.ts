@@ -2,6 +2,7 @@
 import {
   RequiredStringValidator,
   RequiredNumberValidator,
+  RequiredEmailValidator,
   RequiredIntegerValidator,
   ValidationBuilder,
 } from '@/application/validation';
@@ -14,6 +15,19 @@ describe('ValidationBuilder', () => {
       .build();
 
     expect(validators).toEqual([new RequiredStringValidator('any_value', 'any_name')]);
+  });
+
+  it('Should return a RequiredStringValidator and a RequiredEmailValidator', () => {
+    const validators = ValidationBuilder
+      .of({ value: 'any_value', fieldName: 'any_name' })
+      .required('string')
+      .email()
+      .build();
+
+    expect(validators).toEqual([
+      new RequiredStringValidator('any_value', 'any_name'),
+      new RequiredEmailValidator('any_value', 'any_name'),
+    ]);
   });
 
   it('Should return a RequiredNumberValidator', () => {
