@@ -1,6 +1,7 @@
 import {
   RequiredStringValidator,
   RequiredEmailValidator,
+  RequiredMinLengthValidator,
   RequiredNumberValidator,
   RequiredIntegerValidator,
   Validator,
@@ -30,6 +31,11 @@ export class ValidationBuilder {
 
   email(): ValidationBuilder {
     this.validators.push(new RequiredEmailValidator(this.value, this.fieldName));
+    return this;
+  }
+
+  minLength(length: number): ValidationBuilder {
+    this.validators.push(new RequiredMinLengthValidator(length, this.value, this.fieldName));
     return this;
   }
 
