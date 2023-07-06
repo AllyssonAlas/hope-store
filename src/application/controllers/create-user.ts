@@ -1,6 +1,6 @@
 import { CreateUser, Authentication } from '@/domain/usecases';
 import { HttpResponse, forbidden, ok } from '@/application/helpers';
-import { RequiredStringValidator, RequiredEmailValidator, Validator } from '@/application/validation';
+import { ValidationBuilder as Builder, Validator } from '@/application/validation';
 import { Controller } from '@/application/controllers';
 
 type HttpRequest = {
@@ -37,11 +37,10 @@ export class CreateUserController extends Controller {
 
   override buildValidators(httpRequest: HttpRequest): Validator[] {
     return [
-      new RequiredStringValidator(httpRequest.name, 'name'),
-      new RequiredStringValidator(httpRequest.email, 'email'),
-      new RequiredStringValidator(httpRequest.password, 'password'),
-      new RequiredStringValidator(httpRequest.role, 'role'),
-      new RequiredEmailValidator(httpRequest.email, 'email'),
+      ...Builder.of({ value: httpRequest.name, fieldName: 'name' }).required('string').build(),
+      ...Builder.of({ value: httpRequest.email, fieldName: 'email' }).required('string').email().build(),
+      ...Builder.of({ value: httpRequest.password, fieldName: 'password' }).required('string').build(),
+      ...Builder.of({ value: httpRequest.role, fieldName: 'role' }).required('string').build(),
     ];
   }
 }

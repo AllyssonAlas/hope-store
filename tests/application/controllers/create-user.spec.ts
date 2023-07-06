@@ -39,9 +39,9 @@ describe('CreateUserController', () => {
     expect(validators).toEqual([
       new RequiredStringValidator(request.name, 'name'),
       new RequiredStringValidator(request.email, 'email'),
+      new RequiredEmailValidator(request.email, 'email'),
       new RequiredStringValidator(request.password, 'password'),
       new RequiredStringValidator(request.role, 'role'),
-      new RequiredEmailValidator(request.email, 'email'),
     ]);
   });
 
