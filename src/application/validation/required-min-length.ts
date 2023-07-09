@@ -1,4 +1,4 @@
-import { InvalidRequiredParamError } from '@/application/errors';
+import { InvalidRequiredMinLengthError } from '@/application/errors';
 
 export class RequiredMinLengthValidator {
   constructor(
@@ -9,7 +9,7 @@ export class RequiredMinLengthValidator {
 
   validate(): Error | undefined {
     if (this.value.length < this.length) {
-      return new InvalidRequiredParamError(this.fieldName);
+      return new InvalidRequiredMinLengthError(this.fieldName, this.length);
     }
   }
 }

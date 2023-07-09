@@ -11,3 +11,17 @@ export class InvalidRequiredParamError extends Error {
     this.name = 'InvalidRequiredParamError';
   }
 }
+
+export class InvalidRequiredMinLengthError extends Error {
+  constructor(param: string, length: number) {
+    super(`Param ${param} should have at least: ${length} characters`);
+    this.name = 'InvalidRequiredLengthError';
+  }
+}
+
+export class InvalidRequiredMinValueError extends Error {
+  constructor(param: string, value: number) {
+    super(`Param ${param} should be higher than ${value}`);
+    this.name = 'InvalidRequiredMinValueError';
+  }
+}
