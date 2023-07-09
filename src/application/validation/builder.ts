@@ -4,6 +4,7 @@ import {
   RequiredMinLengthValidator,
   RequiredNumberValidator,
   RequiredIntegerValidator,
+  RequiredMinValueValidator,
   Validator,
 } from '@/application/validation';
 
@@ -36,6 +37,11 @@ export class ValidationBuilder {
 
   minLength(length: number): ValidationBuilder {
     this.validators.push(new RequiredMinLengthValidator(length, this.value, this.fieldName));
+    return this;
+  }
+
+  miValue(value: number): ValidationBuilder {
+    this.validators.push(new RequiredMinValueValidator(value, this.value, this.fieldName));
     return this;
   }
 
