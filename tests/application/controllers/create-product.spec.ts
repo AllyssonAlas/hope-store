@@ -9,6 +9,7 @@ import {
 
 describe('CreateUserController', () => {
   let sut: CreateProductController;
+  let createProduct: jest.Mock;
   let request: {
     name: string;
     description: string;
@@ -17,6 +18,7 @@ describe('CreateUserController', () => {
   };
 
   beforeAll(() => {
+    createProduct = jest.fn();
     request = {
       name: 'any_product_name',
       description: 'any_product_description',
@@ -26,7 +28,7 @@ describe('CreateUserController', () => {
   });
 
   beforeEach(() => {
-    sut = new CreateProductController();
+    sut = new CreateProductController(createProduct);
   });
 
   it('Should build validators correctly', () => {
@@ -40,5 +42,17 @@ describe('CreateUserController', () => {
       new RequiredIntegerValidator(request.quantity, 'quantity'),
       new RequiredMinValueValidator(1, request.quantity, 'quantity'),
     ]);
+  });
+
+  it('Should call CreateUser with correct input', async () => {
+    await sut.perform(request);
+
+    expect(createProduct).toHaveBeenCalledWith({
+      name: 'any_product_name',
+      description: 'any_product_description',
+      price: 10.5,
+      quantity: 50,
+    });
+    expect(createProduct).toHaveBeenCalledTimes(1);
   });
 });
