@@ -1,6 +1,7 @@
 import { CreateProduct } from '@/domain/usecases';
 import { ValidationBuilder as Builder, Validator } from '@/application/validation';
 import { HttpResponse, noContent } from '@/application/helpers';
+import { Controller } from '@/application/controllers';
 
 type HttpRequest = {
   name: string;
@@ -9,8 +10,10 @@ type HttpRequest = {
   quantity: number;
 }
 
-export class CreateProductController {
-  constructor(private readonly createProduct: CreateProduct) {}
+export class CreateProductController extends Controller {
+  constructor(private readonly createProduct: CreateProduct) {
+    super();
+  }
 
   async perform(httpRequest: HttpRequest):Promise<HttpResponse> {
     await this.createProduct(httpRequest);
