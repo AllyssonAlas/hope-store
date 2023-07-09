@@ -55,4 +55,13 @@ describe('CreateUserController', () => {
     });
     expect(createProduct).toHaveBeenCalledTimes(1);
   });
+
+  it('Should return 204 on success', async () => {
+    const response = await sut.perform(request);
+
+    expect(response).toEqual({
+      data: null,
+      statusCode: 204,
+    });
+  });
 });
