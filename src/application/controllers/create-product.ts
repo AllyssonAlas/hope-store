@@ -1,3 +1,4 @@
+import { CreateProduct } from '@/domain/usecases';
 import { ValidationBuilder as Builder, Validator } from '@/application/validation';
 
 type HttpRequest = {
@@ -8,10 +9,10 @@ type HttpRequest = {
 }
 
 export class CreateProductController {
-  constructor() {}
+  constructor(private readonly createProduct: CreateProduct) {}
 
   async perform(httpRequest: HttpRequest):Promise<void> {
-
+    await this.createProduct(httpRequest);
   }
 
   buildValidators({ name, description, price, quantity }: HttpRequest): Validator[] {
