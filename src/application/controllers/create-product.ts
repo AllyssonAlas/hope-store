@@ -10,12 +10,14 @@ type HttpRequest = {
   quantity: number;
 }
 
+type Model = null | Error ;
+
 export class CreateProductController extends Controller {
   constructor(private readonly createProduct: CreateProduct) {
     super();
   }
 
-  async perform(httpRequest: HttpRequest):Promise<HttpResponse> {
+  async perform(httpRequest: HttpRequest):Promise<HttpResponse<Model>> {
     await this.createProduct(httpRequest);
     return noContent();
   }
