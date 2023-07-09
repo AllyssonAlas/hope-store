@@ -1,4 +1,4 @@
-import { CreateProductController } from '@/application/controllers';
+import { CreateProductController, Controller } from '@/application/controllers';
 import {
   RequiredStringValidator,
   RequiredMinLengthValidator,
@@ -31,6 +31,10 @@ describe('CreateUserController', () => {
     sut = new CreateProductController(createProduct);
   });
 
+  it('Should extend controller', () => {
+    expect(sut).toBeInstanceOf(Controller);
+  });
+
   it('Should build validators correctly', () => {
     const validators = sut.buildValidators(request);
 
@@ -45,7 +49,7 @@ describe('CreateUserController', () => {
   });
 
   it('Should call CreateUser with correct input', async () => {
-    await sut.perform(request);
+    await sut.handle(request);
 
     expect(createProduct).toHaveBeenCalledWith({
       name: 'any_product_name',
@@ -57,7 +61,7 @@ describe('CreateUserController', () => {
   });
 
   it('Should return 204 on success', async () => {
-    const response = await sut.perform(request);
+    const response = await sut.handle(request);
 
     expect(response).toEqual({
       data: null,
