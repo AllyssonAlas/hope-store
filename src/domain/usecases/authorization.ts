@@ -2,11 +2,9 @@
 import { JwtTokenValidator } from '@/domain/contracts/gateways';
 import { InvalidTokenError, RequiredPermissionError } from '@/domain/errors';
 
-type Input = {
-  token: string;
-  requiredPermission: string
-}
-export type Authorization = (input: Input) => Promise<void>
+type Input = { token: string; requiredPermission: string; }
+type Output = { userId: string; }
+export type Authorization = (input: Input) => Promise<Output>
 type Setup = (tokenValidator: JwtTokenValidator) => Authorization
 
 export const setupAuthorization: Setup = (tokenValidator) => {
@@ -18,5 +16,6 @@ export const setupAuthorization: Setup = (tokenValidator) => {
     if (!tokenData.permissions.includes(requiredPermission)) {
       throw new RequiredPermissionError();
     }
+    return { userId: tokenData.id };
   };
 };
