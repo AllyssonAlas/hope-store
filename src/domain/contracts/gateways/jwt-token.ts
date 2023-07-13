@@ -14,3 +14,19 @@ export namespace JwtTokenGenerator {
     token: string
   };
 }
+
+export interface JwtTokenValidator {
+  validate: (input: JwtTokenValidator.Input) => Promise<JwtTokenValidator.Output>;
+}
+
+export namespace JwtTokenValidator {
+  export type Input = {
+    token: string;
+  };
+
+  export type Output = {
+    id: string;
+    permissions: string[];
+    role: string;
+  }
+}
