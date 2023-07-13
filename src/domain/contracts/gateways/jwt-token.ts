@@ -28,5 +28,5 @@ export namespace JwtTokenValidator {
     id: string;
     permissions: string[];
     role: string;
-  }
+  } | null;
 }
