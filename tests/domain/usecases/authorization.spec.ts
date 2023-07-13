@@ -3,6 +3,7 @@ import { mock, MockProxy } from 'jest-mock-extended';
 
 import { setupAuthorization, Authorization } from '@/domain/usecases';
 import { JwtTokenValidator } from '@/domain/contracts/gateways';
+import { InvalidTokenError } from '@/domain/errors';
 
 describe('Authorization', () => {
   let input: {
@@ -16,6 +17,11 @@ describe('Authorization', () => {
       token: 'any_jwt_token',
     };
     authToken = mock();
+    authToken.validate.mockResolvedValue({
+      id: 'any_user_id',
+      role: 'any_user_role',
+      permissions: ['any_user_permission'],
+    });
   });
 
   beforeEach(() => {
@@ -35,5 +41,13 @@ describe('Authorization', () => {
     const promise = sut(input);
 
     await expect(promise).rejects.toThrow(new Error('token_validator_error'));
+  });
+
+  it('Should throw InvalidTokenError if JwtTokenValidator returns null', async () => {
+    authToken.validate.mockResolvedValueOnce(null);
+
+    const promise = sut(input);
+
+    await expect(promise).rejects.toThrow(new InvalidTokenError());
   });
 });
