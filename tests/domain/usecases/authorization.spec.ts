@@ -53,9 +53,15 @@ describe('Authorization', () => {
     await expect(promise).rejects.toThrow(new InvalidTokenError());
   });
 
-  it('Should throw RequiredPermissionError if token does not include requiredPermission', async () => {
+  it('Should throw RequiredPermissionError if token permissions does not include requiredPermission', async () => {
     const promise = sut({ token: input.token, requiredPermission: 'invalid_required_permission' });
 
     await expect(promise).rejects.toThrow(new RequiredPermissionError());
+  });
+
+  it('Should returns userId on success', async () => {
+    const result = await sut(input);
+
+    expect(result).toEqual({ userId: 'any_user_id' });
   });
 });
