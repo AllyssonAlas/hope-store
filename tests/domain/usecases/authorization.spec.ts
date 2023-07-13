@@ -28,4 +28,12 @@ describe('Authorization', () => {
     expect(authToken.validate).toHaveBeenCalledWith({ token: 'any_jwt_token' });
     expect(authToken.validate).toHaveBeenCalledTimes(1);
   });
+
+  it('Should rethrow if JwtTokenValidator throws', async () => {
+    authToken.validate.mockRejectedValueOnce(new Error('token_validator_error'));
+
+    const promise = sut(input);
+
+    await expect(promise).rejects.toThrow(new Error('token_validator_error'));
+  });
 });
