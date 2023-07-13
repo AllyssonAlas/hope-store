@@ -3,11 +3,12 @@ import { mock, MockProxy } from 'jest-mock-extended';
 
 import { setupAuthorization, Authorization } from '@/domain/usecases';
 import { JwtTokenValidator } from '@/domain/contracts/gateways';
-import { InvalidTokenError } from '@/domain/errors';
+import { InvalidTokenError, RequiredPermissionError } from '@/domain/errors';
 
 describe('Authorization', () => {
   let input: {
     token: string
+    requiredPermission: string
   };
   let authToken: MockProxy<JwtTokenValidator>;
   let sut: Authorization;
@@ -15,6 +16,7 @@ describe('Authorization', () => {
   beforeAll(() => {
     input = {
       token: 'any_jwt_token',
+      requiredPermission: 'any_user_permission',
     };
     authToken = mock();
     authToken.validate.mockResolvedValue({
@@ -49,5 +51,11 @@ describe('Authorization', () => {
     const promise = sut(input);
 
     await expect(promise).rejects.toThrow(new InvalidTokenError());
+  });
+
+  it('Should throw RequiredPermissionError if token does not include requiredPermission', async () => {
+    const promise = sut({ token: input.token, requiredPermission: 'invalid_required_permission' });
+
+    await expect(promise).rejects.toThrow(new RequiredPermissionError());
   });
 });
