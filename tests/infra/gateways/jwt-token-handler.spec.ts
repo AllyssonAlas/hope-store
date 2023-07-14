@@ -64,6 +64,14 @@ describe('JwtTokenHandler', () => {
   });
 
   describe('verify', () => {
+    beforeAll(() => {
+      fakeJwt.verify.mockImplementation(() => ({
+        id: 'any_user_id',
+        role: 'any_user_role',
+        permissions: ['any_user_permission'],
+      }));
+    });
+
     test('Should call verify with correct input', async () => {
       await sut.validate({ token });
 
@@ -91,6 +99,16 @@ describe('JwtTokenHandler', () => {
       const result = await sut.validate({ token });
 
       expect(result).toBeNull();
+    });
+
+    it('Should return an user id and its role and permissions', async () => {
+      const validatedData = await sut.validate({ token });
+
+      expect(validatedData).toEqual({
+        id: 'any_user_id',
+        role: 'any_user_role',
+        permissions: ['any_user_permission'],
+      });
     });
   });
 });
