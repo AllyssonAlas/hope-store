@@ -1,3 +1,4 @@
+import { Authorization } from '@/domain/usecases';
 import { forbidden, HttpResponse } from '@/application/helpers';
 
 type HttpRequest = {
@@ -5,7 +6,16 @@ type HttpRequest = {
 }
 
 export class AuthorizationMiddleware {
-  async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
+  constructor(
+    private readonly authorization: Authorization,
+    private readonly requiredPermission: string,
+  ) {}
+
+  async handle({ authorization }: HttpRequest): Promise<HttpResponse> {
+    await this.authorization({
+      token: authorization,
+      requiredPermission: this.requiredPermission,
+    });
     return forbidden();
   }
 }
