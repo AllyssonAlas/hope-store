@@ -12,10 +12,14 @@ export class AuthorizationMiddleware {
   ) {}
 
   async handle({ authorization }: HttpRequest): Promise<HttpResponse> {
-    await this.authorization({
-      token: authorization,
-      requiredPermission: this.requiredPermission,
-    });
+    try {
+      await this.authorization({
+        token: authorization,
+        requiredPermission: this.requiredPermission,
+      });
+    } catch (error) {
+
+    }
     return forbidden();
   }
 }
