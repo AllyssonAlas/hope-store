@@ -3,7 +3,7 @@ import { ForbiddenError } from '@/application/errors';
 
 describe('AuthorizationMiddleware', () => {
   let sut: AuthorizationMiddleware;
-  let authorization: jest.Mock;
+  let authorize: jest.Mock;
   let request: {
     authorization: string;
   };
@@ -13,11 +13,11 @@ describe('AuthorizationMiddleware', () => {
     request = {
       authorization: 'any_authorization_token',
     };
-    authorization = jest.fn().mockResolvedValue({ userId: 'any_user_id' });
+    authorize = jest.fn().mockResolvedValue({ userId: 'any_user_id' });
   });
 
   beforeEach(() => {
-    sut = new AuthorizationMiddleware(authorization, requiredPermission);
+    sut = new AuthorizationMiddleware(authorize, requiredPermission);
   });
 
   it('Should return 403 if authorization is empty', async () => {
@@ -50,12 +50,12 @@ describe('AuthorizationMiddleware', () => {
   it('Should call Authorization with correct input', async () => {
     await sut.handle(request);
 
-    expect(authorization).toHaveBeenCalledWith({ token: request.authorization, requiredPermission });
-    expect(authorization).toHaveBeenCalledTimes(1);
+    expect(authorize).toHaveBeenCalledWith({ token: request.authorization, requiredPermission });
+    expect(authorize).toHaveBeenCalledTimes(1);
   });
 
   it('Should return 403 if Authorization throws', async () => {
-    authorization.mockRejectedValueOnce(new Error('any_error'));
+    authorize.mockRejectedValueOnce(new Error('any_error'));
 
     const httpResponse = await sut.handle(request);
 

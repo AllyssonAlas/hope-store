@@ -1,4 +1,4 @@
-import { Authorization } from '@/domain/usecases';
+import { Authorization as Authorize } from '@/domain/usecases';
 import { forbidden, HttpResponse, ok } from '@/application/helpers';
 import { RequiredStringValidator } from '@/application/validation';
 
@@ -8,7 +8,7 @@ type HttpRequest = {
 
 export class AuthorizationMiddleware {
   constructor(
-    private readonly authorization: Authorization,
+    private readonly authorize: Authorize,
     private readonly requiredPermission: string,
   ) {}
 
@@ -17,7 +17,7 @@ export class AuthorizationMiddleware {
       if (this.validate({ authorization })) {
         return forbidden();
       }
-      const { userId } = await this.authorization({
+      const { userId } = await this.authorize({
         token: authorization,
         requiredPermission: this.requiredPermission,
       });
