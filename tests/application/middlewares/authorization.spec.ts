@@ -13,7 +13,7 @@ describe('AuthorizationMiddleware', () => {
     request = {
       authorization: 'any_authorization_token',
     };
-    authorization = jest.fn();
+    authorization = jest.fn().mockResolvedValue({ userId: 'any_user_id' });
   });
 
   beforeEach(() => {
@@ -62,6 +62,15 @@ describe('AuthorizationMiddleware', () => {
     expect(httpResponse).toEqual({
       statusCode: 403,
       data: new ForbiddenError(),
+    });
+  });
+
+  it('Should return 200 if userId on success', async () => {
+    const httpResponse = await sut.handle(request);
+
+    expect(httpResponse).toEqual({
+      statusCode: 200,
+      data: { userId: 'any_user_id' },
     });
   });
 });
