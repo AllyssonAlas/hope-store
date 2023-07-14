@@ -80,5 +80,17 @@ describe('JwtTokenHandler', () => {
 
       await expect(promise).rejects.toThrow();
     });
+
+    test('Should return null on failure', async () => {
+      const jwtError = new Error();
+      jwtError.name = 'TokenExpiredError';
+      jest.spyOn(jwt, 'verify').mockImplementationOnce(() => {
+        throw jwtError;
+      });
+
+      const result = await sut.validate({ token });
+
+      expect(result).toBeNull();
+    });
   });
 });
