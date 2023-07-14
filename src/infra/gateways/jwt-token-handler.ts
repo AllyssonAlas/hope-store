@@ -1,6 +1,6 @@
-import { sign } from 'jsonwebtoken';
+import { sign, verify } from 'jsonwebtoken';
 
-import { JwtTokenGenerator } from '@/domain/contracts/gateways';
+import { JwtTokenGenerator, JwtTokenValidator } from '@/domain/contracts/gateways';
 
 export class JwtTokenHandler implements JwtTokenGenerator {
   constructor(private readonly secret: string) {}
@@ -9,5 +9,9 @@ export class JwtTokenHandler implements JwtTokenGenerator {
     const expirationInSeconds = expirationInMs / 1000;
     const token = sign({ id, role, permissions }, this.secret, { expiresIn: expirationInSeconds });
     return { token };
+  }
+
+  async validate(params: JwtTokenValidator.Input): Promise<void> {
+    await verify(params.token, this.secret);
   }
 }
