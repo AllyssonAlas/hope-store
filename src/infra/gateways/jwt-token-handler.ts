@@ -11,7 +11,16 @@ export class JwtTokenHandler implements JwtTokenGenerator {
     return { token };
   }
 
-  async validate(params: JwtTokenValidator.Input): Promise<void> {
-    await verify(params.token, this.secret);
+  async validate({ token }: JwtTokenValidator.Input): Promise<JwtTokenValidator.Output> {
+    try {
+      await verify(token, this.secret);
+    } catch (error) {
+      const jwtErrors = ['TokenExpiredError', 'JsonWebTokenError', 'NotBeforeError'];
+      if (error instanceof Error && !jwtErrors.includes(error.name)) {
+        throw error;
+      }
+    }
+
+    return null;
   }
 }
