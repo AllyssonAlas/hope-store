@@ -62,4 +62,13 @@ describe('JwtTokenHandler', () => {
       expect(generatedKey).toEqual({ token });
     });
   });
+
+  describe('verify', () => {
+    test('Should call verify with correct input', async () => {
+      await sut.validate({ token });
+
+      expect(fakeJwt.verify).toHaveBeenCalledWith(token, secret);
+      expect(fakeJwt.verify).toHaveBeenCalledTimes(1);
+    });
+  });
 });
