@@ -4,6 +4,8 @@ import { Middleware } from '@/application/middlewares';
 
 export const adaptExpressMiddleware = (middleware: Middleware): RequestHandler => {
   return async (req, res, next) => {
-    await middleware.handle({ ...req.headers });
+    const { data, statusCode } = await middleware.handle({ ...req.headers });
+
+    res.status(statusCode).json({ error: data.message });
   };
 };
