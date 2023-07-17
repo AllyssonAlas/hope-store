@@ -1,12 +1,13 @@
 import { Authorization as Authorize } from '@/domain/usecases';
 import { forbidden, HttpResponse, ok } from '@/application/helpers';
+import { Middleware } from '@/application/middlewares';
 import { RequiredStringValidator } from '@/application/validation';
 
 type HttpRequest = {
   authorization: string;
 }
 
-export class AuthorizationMiddleware {
+export class AuthorizationMiddleware implements Middleware {
   constructor(
     private readonly authorize: Authorize,
     private readonly requiredPermission: string,
