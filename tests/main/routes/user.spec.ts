@@ -42,7 +42,7 @@ describe('User Routes', () => {
         role: 'any_role_name',
       });
 
-      const newUser = await prisma.user.findFirst({ where: { email: 'any_email@mail.com' } });
+      const newUser = await prisma.user.findFirst();
 
       const authToken = sign({
         id: newUser?.id,
