@@ -36,5 +36,19 @@ describe('Product Routes', () => {
       expect(status).toBe(204);
       expect(body).toEqual({});
     });
+
+    it('Should return 403 on success', async () => {
+      const { body, status } = await request(app)
+        .post('/api/product/create')
+        .send({
+          name: 'any_product_name',
+          description: 'any_product_description',
+          price: 10.5,
+          quantity: 50,
+        });
+
+      expect(status).toBe(403);
+      expect(body).toEqual({ error: 'Access denied' });
+    });
   });
 });
