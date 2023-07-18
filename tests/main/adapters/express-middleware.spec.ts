@@ -61,4 +61,11 @@ describe('ExpressMiddleware', () => {
     expect(res.json).toHaveBeenCalledWith({ error: 'any_error' });
     expect(res.json).toHaveBeenCalledTimes(1);
   });
+
+  it('Should add data to req.locals', async () => {
+    await sut(req, res, next);
+
+    expect(req.locals).toEqual({ prop: 'any_value' });
+    expect(next).toHaveBeenCalledTimes(1);
+  });
 });
