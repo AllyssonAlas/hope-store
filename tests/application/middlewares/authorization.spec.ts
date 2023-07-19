@@ -1,5 +1,5 @@
 import { AuthorizationMiddleware } from '@/application/middlewares';
-import { ForbiddenError } from '@/application/errors';
+import { UnauthorizedError, ForbiddenError } from '@/application/errors';
 
 describe('AuthorizationMiddleware', () => {
   let sut: AuthorizationMiddleware;
@@ -20,30 +20,30 @@ describe('AuthorizationMiddleware', () => {
     sut = new AuthorizationMiddleware(authorize, requiredPermission);
   });
 
-  it('Should return 403 if authorization is empty', async () => {
+  it('Should return 401 if authorization is empty', async () => {
     const httpResponse = await sut.handle({ authorization: '' });
 
     expect(httpResponse).toEqual({
-      statusCode: 403,
-      data: new ForbiddenError(),
+      statusCode: 401,
+      data: new UnauthorizedError(),
     });
   });
 
-  it('Should return 403 if authorization is null', async () => {
+  it('Should return 401 if authorization is null', async () => {
     const httpResponse = await sut.handle({ authorization: null as any });
 
     expect(httpResponse).toEqual({
-      statusCode: 403,
-      data: new ForbiddenError(),
+      statusCode: 401,
+      data: new UnauthorizedError(),
     });
   });
 
-  it('Should return 403 if authorization is undefined', async () => {
+  it('Should return 401 if authorization is undefined', async () => {
     const httpResponse = await sut.handle({ authorization: undefined as any });
 
     expect(httpResponse).toEqual({
-      statusCode: 403,
-      data: new ForbiddenError(),
+      statusCode: 401,
+      data: new UnauthorizedError(),
     });
   });
 

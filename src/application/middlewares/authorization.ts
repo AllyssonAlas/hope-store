@@ -1,5 +1,5 @@
 import { Authorization as Authorize } from '@/domain/usecases';
-import { forbidden, HttpResponse, ok } from '@/application/helpers';
+import { unauthorized, forbidden, HttpResponse, ok } from '@/application/helpers';
 import { Middleware } from '@/application/middlewares';
 import { RequiredStringValidator } from '@/application/validation';
 
@@ -16,7 +16,7 @@ export class AuthorizationMiddleware implements Middleware {
   async handle({ authorization }: HttpRequest): Promise<HttpResponse> {
     try {
       if (this.validate({ authorization })) {
-        return forbidden();
+        return unauthorized();
       }
       const { userId } = await this.authorize({
         token: authorization,

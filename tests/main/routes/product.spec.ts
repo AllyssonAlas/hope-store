@@ -47,8 +47,8 @@ describe('Product Routes', () => {
           quantity: 50,
         });
 
-      expect(status).toBe(403);
-      expect(body).toEqual({ error: 'Access denied' });
+      expect(status).toBe(401);
+      expect(body).toEqual({ error: 'Unauthorized' });
     });
   });
 });
