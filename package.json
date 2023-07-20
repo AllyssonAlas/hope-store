@@ -61,6 +61,6 @@
   },
   "prisma": {
     "schema": "src/infra/database/postgres/prisma/schema.prisma",
-    "seed": "node dist/infra/database/postgres/helpers/seed.js"
+    "seed": "node dist/main/config/seed.js"
   }
 }
