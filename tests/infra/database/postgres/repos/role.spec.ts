@@ -3,8 +3,8 @@ import { PrismaClient } from '@prisma/client';
 import { PgRoleRepository } from '@/infra/database/postgres/repositories';
 
 describe('PgRoleRepository', () => {
-  let prisma: PrismaClient;
   let sut: PgRoleRepository;
+  let prisma: PrismaClient;
 
   beforeAll(() => {
     prisma = new PrismaClient();

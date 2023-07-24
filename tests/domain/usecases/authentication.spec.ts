@@ -7,18 +7,17 @@ import { HasherComparer, JwtTokenGenerator } from '@/domain/contracts/gateways';
 import { InvalidCredentialsError } from '@/domain/errors';
 
 describe('Authentication', () => {
-  let credentials: any;
-  let authToken: MockProxy<JwtTokenGenerator>;
-  let roleRepository: MockProxy<LoadRoleRepository>;
-  let hasherComparer: MockProxy<HasherComparer>;
-  let userRepository: MockProxy<LoadUserRepository>;
   let sut: Authentication;
+  let userRepository: MockProxy<LoadUserRepository>;
+  let hasherComparer: MockProxy<HasherComparer>;
+  let roleRepository: MockProxy<LoadRoleRepository>;
+  let authToken: MockProxy<JwtTokenGenerator>;
+  let input: {
+    email: string;
+    password: string;
+  };
 
   beforeAll(() => {
-    credentials = {
-      email: 'any_user_email',
-      password: 'any_user_password',
-    };
     userRepository = mock();
     userRepository.load.mockResolvedValue({
       id: 'any_user_id',
@@ -33,6 +32,10 @@ describe('Authentication', () => {
     roleRepository.load.mockResolvedValue({ id: 'any_role_id', name: 'any_role_name', permissions: ['any_permissions'] });
     authToken = mock();
     authToken.generate.mockResolvedValue({ token: 'any_token' });
+    input = {
+      email: 'any_user_email',
+      password: 'any_user_password',
+    };
   });
 
   beforeEach(() => {
@@ -40,7 +43,7 @@ describe('Authentication', () => {
   });
 
   it('Should call LoadUserRepository with correct input', async () => {
-    await sut(credentials);
+    await sut(input);
 
     expect(userRepository.load).toHaveBeenCalledWith({ email: 'any_user_email' });
     expect(userRepository.load).toHaveBeenCalledTimes(1);
@@ -49,7 +52,7 @@ describe('Authentication', () => {
   it('Should rethrow if LoadUserRepository throws', async () => {
     userRepository.load.mockRejectedValueOnce(new Error('load_user_repository_error'));
 
-    const promise = sut(credentials);
+    const promise = sut(input);
 
     await expect(promise).rejects.toThrow(new Error('load_user_repository_error'));
   });
@@ -57,13 +60,13 @@ describe('Authentication', () => {
   it('Should throw InvalidCredentialsError if LoadUserRepository returns null', async () => {
     userRepository.load.mockResolvedValueOnce(null);
 
-    const promise = sut(credentials);
+    const promise = sut(input);
 
     await expect(promise).rejects.toThrow(new InvalidCredentialsError());
   });
 
   it('Should call HasherComparer with correct input', async () => {
-    await sut(credentials);
+    await sut(input);
 
     expect(hasherComparer.compare).toHaveBeenCalledWith({
       plaintext: 'any_user_password',
@@ -75,7 +78,7 @@ describe('Authentication', () => {
   it('Should rethrow if HasherComparer throws', async () => {
     hasherComparer.compare.mockRejectedValueOnce(new Error('hasher_comparer_error'));
 
-    const promise = sut(credentials);
+    const promise = sut(input);
 
     await expect(promise).rejects.toThrow(new Error('hasher_comparer_error'));
   });
@@ -83,13 +86,13 @@ describe('Authentication', () => {
   it('Should throw InvalidCredentialsError if HasherComparer isValid false', async () => {
     hasherComparer.compare.mockResolvedValueOnce({ isValid: false });
 
-    const promise = sut(credentials);
+    const promise = sut(input);
 
     await expect(promise).rejects.toThrow(new InvalidCredentialsError());
   });
 
   it('Should call LoadRoleRepository with correct input', async () => {
-    await sut(credentials);
+    await sut(input);
 
     expect(roleRepository.load).toHaveBeenCalledWith({ name: 'any_user_role' });
     expect(roleRepository.load).toHaveBeenCalledTimes(1);
@@ -98,13 +101,13 @@ describe('Authentication', () => {
   it('Should rethrow if LoadRoleRepository throws', async () => {
     roleRepository.load.mockRejectedValueOnce(new Error('role_repository_error'));
 
-    const promise = sut(credentials);
+    const promise = sut(input);
 
     await expect(promise).rejects.toThrow(new Error('role_repository_error'));
   });
 
   it('Should call JwtTokenGenerator with correct input', async () => {
-    await sut(credentials);
+    await sut(input);
 
     expect(authToken.generate).toHaveBeenCalledWith({
       id: 'any_user_id',
@@ -118,13 +121,13 @@ describe('Authentication', () => {
   it('Should rethrow if JwtTokenGenerator throws', async () => {
     authToken.generate.mockRejectedValueOnce(new Error('jwt_token_generator_error'));
 
-    const promise = sut(credentials);
+    const promise = sut(input);
 
     await expect(promise).rejects.toThrow(new Error('jwt_token_generator_error'));
   });
 
   it('Should return correct output on success', async () => {
-    const result = await sut(credentials);
+    const result = await sut(input);
 
     expect(result).toEqual({
       authToken: 'any_token',

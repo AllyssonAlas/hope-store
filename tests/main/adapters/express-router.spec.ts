@@ -6,11 +6,11 @@ import { Controller } from '@/application/controllers';
 import { adaptExpressRoute } from '@/main/adapters';
 
 describe('ExpressRouter', () => {
+  let sut: RequestHandler;
   let req: Request;
   let res: Response;
   let next: NextFunction;
   let controller: MockProxy<Controller>;
-  let sut: RequestHandler;
 
   beforeAll(() => {
     req = getMockReq({ body: { any: 'any' } });

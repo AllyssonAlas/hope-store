@@ -6,24 +6,24 @@ import { JwtTokenValidator } from '@/domain/contracts/gateways';
 import { InvalidTokenError, RequiredPermissionError } from '@/domain/errors';
 
 describe('Authorization', () => {
-  let input: {
-    token: string
-    requiredPermission: string
-  };
-  let authToken: MockProxy<JwtTokenValidator>;
   let sut: Authorization;
+  let authToken: MockProxy<JwtTokenValidator>;
+  let input: {
+    token: string;
+    requiredPermission: string;
+  };
 
   beforeAll(() => {
-    input = {
-      token: 'any_jwt_token',
-      requiredPermission: 'any_user_permission',
-    };
     authToken = mock();
     authToken.validate.mockResolvedValue({
       id: 'any_user_id',
       role: 'any_user_role',
       permissions: ['any_user_permission'],
     });
+    input = {
+      token: 'any_jwt_token',
+      requiredPermission: 'any_user_permission',
+    };
   });
 
   beforeEach(() => {

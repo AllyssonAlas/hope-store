@@ -5,15 +5,15 @@ import { JwtTokenHandler } from '@/infra/gateways';
 jest.mock('jsonwebtoken');
 
 describe('JwtTokenHandler', () => {
+  let sut: JwtTokenHandler;
+  let fakeJwt: jest.Mocked<typeof jwt>;
   let token: string;
+  let secret: string;
   let tokenData: {
     id: string;
     role: string;
     permissions: string[];
   };
-  let secret: string;
-  let fakeJwt: jest.Mocked<typeof jwt>;
-  let sut: JwtTokenHandler;
 
   beforeAll(() => {
     fakeJwt = jwt as jest.Mocked<typeof jwt>;
@@ -23,7 +23,6 @@ describe('JwtTokenHandler', () => {
       role: 'any_role',
       permissions: ['any_permission'],
     };
-
     token = 'any_token';
   });
 

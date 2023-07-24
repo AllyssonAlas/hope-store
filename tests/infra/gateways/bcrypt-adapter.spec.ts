@@ -5,17 +5,17 @@ import { BcryptAdapter } from '@/infra/gateways';
 jest.mock('bcrypt');
 
 describe('BcryptAdapter', () => {
-  let plaintext: string;
-  let salt: 12;
-  let fakeBcrypt: jest.Mocked<typeof bcrypt>;
   let sut : BcryptAdapter;
+  let fakeBcrypt: jest.Mocked<typeof bcrypt>;
+  let salt: 12;
+  let plaintext: string;
 
   beforeAll(() => {
-    plaintext = 'any_plaintext';
-    salt = 12;
     fakeBcrypt = bcrypt as jest.Mocked<typeof bcrypt>;
     fakeBcrypt.hash.mockImplementation(() => 'hashed_string');
     fakeBcrypt.compare.mockImplementation(() => true);
+    plaintext = 'any_plaintext';
+    salt = 12;
   });
 
   beforeEach(() => {

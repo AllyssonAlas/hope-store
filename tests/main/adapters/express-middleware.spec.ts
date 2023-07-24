@@ -6,11 +6,11 @@ import { Middleware } from '@/application/middlewares';
 import { adaptExpressMiddleware } from '@/main/adapters';
 
 describe('ExpressMiddleware', () => {
+  let sut: RequestHandler;
   let req: Request;
   let res: Response;
-  let middleware: MockProxy<Middleware>;
   let next: NextFunction;
-  let sut: RequestHandler;
+  let middleware: MockProxy<Middleware>;
 
   beforeAll(() => {
     req = getMockReq({ headers: { any: 'any' } });
