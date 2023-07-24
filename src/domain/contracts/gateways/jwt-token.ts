@@ -4,14 +4,14 @@ export interface JwtTokenGenerator {
 
 export namespace JwtTokenGenerator {
   export type Input = {
-    id: string
-    role: string
-    permissions: string[]
-    expirationInMs: number
+    id: string;
+    role: string;
+    permissions: string[];
+    expirationInMs: number;
   };
 
   export type Output = {
-    token: string
+    token: string;
   };
 }
 

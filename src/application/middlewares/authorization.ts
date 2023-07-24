@@ -11,7 +11,7 @@ export class AuthorizationMiddleware implements Middleware {
   constructor(
     private readonly authorize: Authorize,
     private readonly requiredPermission: string,
-  ) {}
+  ) {};
 
   async handle({ authorization }: HttpRequest): Promise<HttpResponse> {
     try {

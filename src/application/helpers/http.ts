@@ -3,7 +3,7 @@ import { UnauthorizedError, ForbiddenError, ServerError } from '@/application/er
 export type HttpResponse <T = any> = {
   data: T;
   statusCode: number;
-}
+};
 
 export const ok = <T = any>(data: T): HttpResponse<T> => ({
   data,
