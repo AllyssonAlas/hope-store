@@ -1,4 +1,4 @@
-# Create User Usecase
+# Create Product Usecase
 
 > ## Case of success
 1. System receives **Product** data
