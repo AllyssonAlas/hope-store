@@ -2,6 +2,7 @@ import { mock, MockProxy } from 'jest-mock-extended';
 
 import { setupCreateOrder, CreateOrder } from '@/domain/usecases';
 import { LoadProductsListRepository } from '@/domain/contracts/repositories';
+import { ProductNotFoundError } from '@/domain/errors';
 
 describe('CreateProduct', () => {
   let sut: CreateOrder;
@@ -24,6 +25,22 @@ describe('CreateProduct', () => {
 
   beforeAll(() => {
     productRepository = mock();
+    productRepository.loadList.mockResolvedValue([
+      {
+        id: 'any_product_id_1',
+        description: 'any_product_description',
+        name: 'any_product_name',
+        price: 10,
+        quantity: 2,
+      },
+      {
+        id: 'any_product_id_2',
+        description: 'any_product_description',
+        name: 'any_product_name',
+        price: 20,
+        quantity: 4,
+      },
+    ]);
     input = {
       userId: 'any_user_id',
       products: [
@@ -50,5 +67,23 @@ describe('CreateProduct', () => {
 
     expect(productRepository.loadList).toHaveBeenCalledWith({ ids: ['any_product_id_1', 'any_product_id_2'] });
     expect(productRepository.loadList).toHaveBeenCalledTimes(1);
+  });
+
+  it('Should throw ProductNotFoundError if product list length returned by LoadProductsListRepository is smaller than input products length ', async () => {
+    productRepository.loadList.mockResolvedValueOnce([
+      {
+        id: 'any_product_id_2',
+        description: 'any_product_description',
+        name: 'any_product_name',
+        price: 20,
+        quantity: 4,
+      },
+    ]);
+
+    try {
+      await sut(input);
+    } catch (error) {
+      expect(error).toEqual(new ProductNotFoundError('any_product_id_1'));
+    }
   });
 });
