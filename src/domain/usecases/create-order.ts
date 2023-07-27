@@ -1,6 +1,6 @@
 
 import { LoadProductsListRepository } from '@/domain/contracts/repositories';
-import { ProductNotFoundError } from '@/domain/errors';
+import { ProductNotFoundError, InsufficientProductAmountError } from '@/domain/errors';
 
 type Input = {
   userId: string
@@ -29,6 +29,16 @@ export const setupCreateOrder: Setup = (productRepo) => {
     const checkProductNotFound = productsIds.find(id => !productsData.find(product => product.id === id));
     if (checkProductNotFound) {
       throw new ProductNotFoundError(checkProductNotFound);
+    }
+    const checkInsufficientAmount = productsData.find(({ id, quantity }) => {
+      const productIndex = products.findIndex(p => p.id === id);
+      return quantity < products[productIndex].quantity;
+    });
+    if (checkInsufficientAmount) {
+      throw new InsufficientProductAmountError(
+        checkInsufficientAmount.id,
+        checkInsufficientAmount.quantity,
+      );
     }
   };
 };
