@@ -2,7 +2,7 @@ import { mock, MockProxy } from 'jest-mock-extended';
 
 import { setupCreateOrder, CreateOrder } from '@/domain/usecases';
 import { LoadProductsListRepository } from '@/domain/contracts/repositories';
-import { ProductNotFoundError } from '@/domain/errors';
+import { ProductNotFoundError, InsufficientProductAmountError } from '@/domain/errors';
 
 describe('CreateProduct', () => {
   let sut: CreateOrder;
@@ -38,7 +38,7 @@ describe('CreateProduct', () => {
         description: 'any_product_description',
         name: 'any_product_name',
         price: 20,
-        quantity: 4,
+        quantity: 10,
       },
     ]);
     input = {
@@ -80,10 +80,16 @@ describe('CreateProduct', () => {
       },
     ]);
 
+    const promise = sut(input);
+
+    await expect(promise).rejects.toThrow(new ProductNotFoundError('any_product_id_1'));
+  });
+
+  it('Should throw InsufficientProductAmountError if amount required is higher than returned by LoadProductsListRepository', async () => {
     try {
-      await sut(input);
+      await sut({ ...input, products: [{ id: 'any_product_id_1', quantity: 99 }] });
     } catch (error) {
-      expect(error).toEqual(new ProductNotFoundError('any_product_id_1'));
+      expect(error).toEqual(new InsufficientProductAmountError('any_product_id_1', 2));
     }
   });
 });
