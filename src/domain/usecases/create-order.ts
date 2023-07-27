@@ -1,5 +1,6 @@
 
 import { LoadProductsListRepository } from '@/domain/contracts/repositories';
+import { ProductNotFoundError } from '@/domain/errors';
 
 type Input = {
   userId: string
@@ -23,6 +24,11 @@ type Setup = (
 
 export const setupCreateOrder: Setup = (productRepo) => {
   return async ({ products }) => {
-    await productRepo.loadList({ ids: products.map(({ id }) => id) });
+    const productsIds = products.map(({ id }) => id);
+    const productsData = await productRepo.loadList({ ids: productsIds });
+    const checkProductNotFound = productsIds.find(id => !productsData.find(product => product.id === id));
+    if (checkProductNotFound) {
+      throw new ProductNotFoundError(checkProductNotFound);
+    }
   };
 };
