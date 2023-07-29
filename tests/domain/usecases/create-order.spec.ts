@@ -2,11 +2,13 @@ import { mock, MockProxy } from 'jest-mock-extended';
 
 import { setupCreateOrder, CreateOrder } from '@/domain/usecases';
 import { LoadProductsListRepository } from '@/domain/contracts/repositories';
+import { PostalCodeApi } from '@/domain/contracts/gateways';
 import { ProductNotFoundError, InsufficientProductAmountError } from '@/domain/errors';
 
 describe('CreateProduct', () => {
   let sut: CreateOrder;
   let productRepository: MockProxy<LoadProductsListRepository>;
+  let postalCodeApi: MockProxy<PostalCodeApi>;
   let input: {
     userId: string
     products: Array<{
@@ -41,6 +43,7 @@ describe('CreateProduct', () => {
         quantity: 10,
       },
     ]);
+    postalCodeApi = mock();
     input = {
       userId: 'any_user_id',
       products: [
@@ -59,7 +62,7 @@ describe('CreateProduct', () => {
   });
 
   beforeEach(() => {
-    sut = setupCreateOrder(productRepository);
+    sut = setupCreateOrder(productRepository, postalCodeApi);
   });
 
   it('Should call LoadProductsListRepository with correct input', async () => {
@@ -99,5 +102,14 @@ describe('CreateProduct', () => {
     const promise = sut(input);
 
     await expect(promise).rejects.toThrow(new Error('load_products_list_repository_error'));
+  });
+
+  it('Should call PostalCodeApi with correct input', async () => {
+    await sut(input);
+
+    expect(postalCodeApi.getAddress).toHaveBeenCalledWith({
+      postalCode: 'any_postalCode_name',
+    });
+    expect(postalCodeApi.getAddress).toHaveBeenCalledTimes(1);
   });
 });
