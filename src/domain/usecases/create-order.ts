@@ -1,5 +1,6 @@
 
 import { LoadProductsListRepository } from '@/domain/contracts/repositories';
+import { PostalCodeApi } from '@/domain/contracts/gateways';
 import { ProductNotFoundError, InsufficientProductAmountError } from '@/domain/errors';
 
 type Input = {
@@ -19,11 +20,12 @@ type Input = {
 }
 export type CreateOrder = (input: Input) => Promise<void>;
 type Setup = (
-  productRepo: LoadProductsListRepository
+  productRepo: LoadProductsListRepository,
+  postalCode: PostalCodeApi,
 ) => CreateOrder
 
-export const setupCreateOrder: Setup = (productRepo) => {
-  return async ({ products }) => {
+export const setupCreateOrder: Setup = (productRepo, postalCode) => {
+  return async ({ products, address }) => {
     const productsIds = products.map(({ id }) => id);
     const productsData = await productRepo.loadList({ ids: productsIds });
     const checkProductNotFound = productsIds.find(id => !productsData.find(product => product.id === id));
@@ -40,5 +42,6 @@ export const setupCreateOrder: Setup = (productRepo) => {
         checkInsufficientAmount.quantity,
       );
     }
+    await postalCode.getAddress({ postalCode: address.postalCode });
   };
 };
