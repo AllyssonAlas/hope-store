@@ -92,4 +92,12 @@ describe('CreateProduct', () => {
       expect(error).toEqual(new InsufficientProductAmountError('any_product_id_1', 2));
     }
   });
+
+  it('Should rethrow if LoadProductsListRepository throws', async () => {
+    productRepository.loadList.mockRejectedValueOnce(new Error('load_products_list_repository_error'));
+
+    const promise = sut(input);
+
+    await expect(promise).rejects.toThrow(new Error('load_products_list_repository_error'));
+  });
 });
