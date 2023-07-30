@@ -151,4 +151,12 @@ describe('CreateProduct', () => {
     });
     expect(orderRepository.save).toHaveBeenCalledTimes(1);
   });
+
+  it('Should rethrow if SaveOrderRespository throws', async () => {
+    orderRepository.save.mockRejectedValueOnce(new Error('save_order_repository_error'));
+
+    const promise = sut(input);
+
+    await expect(promise).rejects.toThrow(new Error('save_order_repository_error'));
+  });
 });
