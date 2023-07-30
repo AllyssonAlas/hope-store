@@ -1,7 +1,7 @@
 import { mock, MockProxy } from 'jest-mock-extended';
 
 import { setupCreateOrder, CreateOrder } from '@/domain/usecases';
-import { LoadProductsListRepository } from '@/domain/contracts/repositories';
+import { LoadProductsListRepository, SaveOrderRepository } from '@/domain/contracts/repositories';
 import { PostalCodeApi } from '@/domain/contracts/gateways';
 import { ProductNotFoundError, InsufficientProductAmountError, InvalidAddressError } from '@/domain/errors';
 
@@ -9,6 +9,7 @@ describe('CreateProduct', () => {
   let sut: CreateOrder;
   let productRepository: MockProxy<LoadProductsListRepository>;
   let postalCodeApi: MockProxy<PostalCodeApi>;
+  let orderRepository: MockProxy<SaveOrderRepository>;
   let input: {
     userId: string
     products: Array<{
@@ -65,10 +66,11 @@ describe('CreateProduct', () => {
         postalCode: 'any_postalCode_name',
       },
     };
+    orderRepository = mock();
   });
 
   beforeEach(() => {
-    sut = setupCreateOrder(productRepository, postalCodeApi);
+    sut = setupCreateOrder(productRepository, postalCodeApi, orderRepository);
   });
 
   it('Should call LoadProductsListRepository with correct input', async () => {
@@ -125,5 +127,28 @@ describe('CreateProduct', () => {
     const promise = sut(input);
 
     await expect(promise).rejects.toThrow(new InvalidAddressError());
+  });
+
+  it('Should call SaveOrderRespository with correct input', async () => {
+    await sut(input);
+
+    expect(orderRepository.save).toHaveBeenCalledWith({
+      userId: 'any_user_id',
+      products: [
+        { id: 'any_product_id_1', quantity: 1 },
+        { id: 'any_product_id_2', quantity: 5 },
+      ],
+      contact: 'any_contact_@gmail.com',
+      address: {
+        street: 'any_street_name',
+        number: 'any_number_name',
+        neighborhood: 'any_neighborhood_name',
+        city: 'any_city_name',
+        postalCode: 'any_postalCode_name',
+      },
+      status: 'pending',
+      value: 110,
+    });
+    expect(orderRepository.save).toHaveBeenCalledTimes(1);
   });
 });
