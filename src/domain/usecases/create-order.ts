@@ -1,7 +1,7 @@
 
 import { LoadProductsListRepository } from '@/domain/contracts/repositories';
 import { PostalCodeApi } from '@/domain/contracts/gateways';
-import { ProductNotFoundError, InsufficientProductAmountError } from '@/domain/errors';
+import { ProductNotFoundError, InsufficientProductAmountError, InvalidAddressError } from '@/domain/errors';
 
 type Input = {
   userId: string
@@ -42,6 +42,9 @@ export const setupCreateOrder: Setup = (productRepo, postalCode) => {
         checkInsufficientAmount.quantity,
       );
     }
-    await postalCode.getAddress({ postalCode: address.postalCode });
+    const postalCodeResponse = await postalCode.getAddress({ postalCode: address.postalCode });
+    if (!postalCodeResponse) {
+      throw new InvalidAddressError();
+    }
   };
 };

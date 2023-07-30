@@ -12,5 +12,5 @@ export namespace PostalCodeApi {
     neighborhood: string;
     city: string;
     postalCode: string;
-  };
+  } | null;
 }
