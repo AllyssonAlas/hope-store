@@ -1,5 +1,5 @@
 
-import { LoadProductsListRepository } from '@/domain/contracts/repositories';
+import { LoadProductsListRepository, SaveOrderRepository } from '@/domain/contracts/repositories';
 import { PostalCodeApi } from '@/domain/contracts/gateways';
 import { ProductNotFoundError, InsufficientProductAmountError, InvalidAddressError } from '@/domain/errors';
 
@@ -22,10 +22,11 @@ export type CreateOrder = (input: Input) => Promise<void>;
 type Setup = (
   productRepo: LoadProductsListRepository,
   postalCode: PostalCodeApi,
+  orderRepo: SaveOrderRepository
 ) => CreateOrder
 
-export const setupCreateOrder: Setup = (productRepo, postalCode) => {
-  return async ({ products, address }) => {
+export const setupCreateOrder: Setup = (productRepo, postalCode, orderRepo) => {
+  return async ({ products, address, ...rest }) => {
     const productsIds = products.map(({ id }) => id);
     const productsData = await productRepo.loadList({ ids: productsIds });
     const checkProductNotFound = productsIds.find(id => !productsData.find(product => product.id === id));
@@ -46,5 +47,11 @@ export const setupCreateOrder: Setup = (productRepo, postalCode) => {
     if (!postalCodeResponse) {
       throw new InvalidAddressError();
     }
+    const orderValue = productsData.reduce((total, { id, price }) => {
+      const productIndex = products.findIndex(p => p.id === id);
+      return total + price * products[productIndex].quantity;
+    }, 0);
+
+    await orderRepo.save({ products, address, status: 'pending', value: orderValue, ...rest });
   };
 };
