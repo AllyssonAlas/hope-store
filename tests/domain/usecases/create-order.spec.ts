@@ -3,7 +3,7 @@ import { mock, MockProxy } from 'jest-mock-extended';
 import { setupCreateOrder, CreateOrder } from '@/domain/usecases';
 import { LoadProductsListRepository } from '@/domain/contracts/repositories';
 import { PostalCodeApi } from '@/domain/contracts/gateways';
-import { ProductNotFoundError, InsufficientProductAmountError } from '@/domain/errors';
+import { ProductNotFoundError, InsufficientProductAmountError, InvalidAddressError } from '@/domain/errors';
 
 describe('CreateProduct', () => {
   let sut: CreateOrder;
@@ -44,6 +44,12 @@ describe('CreateProduct', () => {
       },
     ]);
     postalCodeApi = mock();
+    postalCodeApi.getAddress.mockResolvedValue({
+      street: 'any_street_name',
+      neighborhood: 'any_neighborhood_name',
+      city: 'any_city_name',
+      postalCode: 'any_postalCode_name',
+    });
     input = {
       userId: 'any_user_id',
       products: [
@@ -111,5 +117,13 @@ describe('CreateProduct', () => {
       postalCode: 'any_postalCode_name',
     });
     expect(postalCodeApi.getAddress).toHaveBeenCalledTimes(1);
+  });
+
+  it('Should return InvalidAddressError if PostalCodeApi returns null', async () => {
+    postalCodeApi.getAddress.mockResolvedValueOnce(null);
+
+    const promise = sut(input);
+
+    await expect(promise).rejects.toThrow(new InvalidAddressError());
   });
 });
