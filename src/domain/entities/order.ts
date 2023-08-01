@@ -51,7 +51,13 @@ export class Order {
       const productIndex = this.products.findIndex(p => p.id === id);
       return quantity < this.products[productIndex].quantity;
     });
-
     return insufficientAmount || null;
+  }
+
+  checkUnexistingProduct(productsList: Product[]): string | undefined {
+    const checkProductNotFound = this.products.find(({ id }) => {
+      return !productsList.find(product => product.id === id);
+    });
+    return checkProductNotFound?.id;
   }
 }
