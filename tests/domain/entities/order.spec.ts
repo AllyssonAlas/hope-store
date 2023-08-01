@@ -120,4 +120,18 @@ describe('Order', () => {
 
     expect(sut).toBeNull();
   });
+
+  it('Should return an unexisting product', () => {
+    const unavailableRequest = [{ id: 'any_product_id_3', quantity: 1 }];
+
+    const sut = new Order({ ...orderData, products: unavailableRequest }).checkUnexistingProduct(products);
+
+    expect(sut).toBe('any_product_id_3');
+  });
+
+  it('Should return undefined', () => {
+    const sut = new Order({ ...orderData }).checkUnexistingProduct(products);
+
+    expect(sut).toBeUndefined();
+  });
 });
