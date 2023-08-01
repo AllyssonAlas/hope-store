@@ -62,7 +62,7 @@ describe('Order', () => {
     });
   });
 
-  it('Should create an order without value', () => {
+  it('Should calculate order value', () => {
     const sut = new Order({ ...orderData });
 
     expect(sut).toEqual({
