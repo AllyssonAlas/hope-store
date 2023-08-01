@@ -65,4 +65,44 @@ describe('Order', () => {
       value: 0,
     });
   });
+
+  it('Should create an order with method', () => {
+    const products = [
+      {
+        id: 'any_product_id_1',
+        description: 'any_product_description',
+        name: 'any_product_name',
+        price: 20,
+        quantity: 99,
+      },
+      {
+        id: 'any_product_id_2',
+        description: 'any_product_description',
+        name: 'any_product_name',
+        price: 1,
+        quantity: 99,
+      },
+    ];
+
+    const sut = new Order(orderData);
+    sut.calculateValue(products);
+
+    expect(sut).toEqual({
+      userId: 'any_user_id',
+      products: [
+        { id: 'any_product_id_1', quantity: 3 },
+        { id: 'any_product_id_2', quantity: 5 },
+      ],
+      contact: 'any_contact@mail.com',
+      address: {
+        street: 'any_street_name',
+        number: 'any_number_',
+        neighborhood: 'any_neighborhood_name',
+        city: 'any_city_name',
+        postalCode: 'any_postal_code',
+      },
+      status: 'pending',
+      value: 65,
+    });
+  });
 });
