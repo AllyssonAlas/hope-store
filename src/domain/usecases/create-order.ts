@@ -1,4 +1,5 @@
 
+import { Order } from '@/domain/entities';
 import { LoadProductsListRepository, SaveOrderRepository } from '@/domain/contracts/repositories';
 import { PostalCodeApi } from '@/domain/contracts/gateways';
 import { ProductNotFoundError, InsufficientProductAmountError, InvalidAddressError } from '@/domain/errors';
@@ -47,11 +48,8 @@ export const setupCreateOrder: Setup = (productRepo, postalCode, orderRepo) => {
     if (!postalCodeResponse) {
       throw new InvalidAddressError();
     }
-    const orderValue = productsData.reduce((total, { id, price }) => {
-      const productIndex = products.findIndex(p => p.id === id);
-      return total + price * products[productIndex].quantity;
-    }, 0);
-
-    await orderRepo.save({ products, address, status: 'pending', value: orderValue, ...rest });
+    const order = new Order({ products, address, status: 'pending', ...rest });
+    order.calculateValue(productsData);
+    await orderRepo.save(order);
   };
 };
