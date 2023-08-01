@@ -1,7 +1,8 @@
-import { Order } from '@/domain/entities';
+import { Order, Product } from '@/domain/entities';
 
 describe('Order', () => {
   let orderData: any;
+  let products: Product[];
 
   beforeAll(() => {
     orderData = {
@@ -20,6 +21,23 @@ describe('Order', () => {
       },
       status: 'pending',
     };
+
+    products = [
+      {
+        id: 'any_product_id_1',
+        description: 'any_product_description',
+        name: 'any_product_name',
+        price: 20,
+        quantity: 99,
+      },
+      {
+        id: 'any_product_id_2',
+        description: 'any_product_description',
+        name: 'any_product_name',
+        price: 1,
+        quantity: 99,
+      },
+    ];
   });
 
   it('Should create an order', () => {
@@ -67,23 +85,6 @@ describe('Order', () => {
   });
 
   it('Should create an order with method', () => {
-    const products = [
-      {
-        id: 'any_product_id_1',
-        description: 'any_product_description',
-        name: 'any_product_name',
-        price: 20,
-        quantity: 99,
-      },
-      {
-        id: 'any_product_id_2',
-        description: 'any_product_description',
-        name: 'any_product_name',
-        price: 1,
-        quantity: 99,
-      },
-    ];
-
     const sut = new Order(orderData);
     sut.calculateValue(products);
 
@@ -104,5 +105,19 @@ describe('Order', () => {
       status: 'pending',
       value: 65,
     });
+  });
+
+  it('Should return an unavailable product', () => {
+    const unavailableRequest = [{ id: 'any_product_id_1', quantity: 100 }];
+
+    const sut = new Order({ ...orderData, products: unavailableRequest }).checkUnavailableProduct(products);
+
+    expect(sut).toMatchObject({ id: 'any_product_id_1', quantity: 99 });
+  });
+
+  it('Should return an null', () => {
+    const sut = new Order({ ...orderData }).checkUnavailableProduct(products);
+
+    expect(sut).toBeNull();
   });
 });
