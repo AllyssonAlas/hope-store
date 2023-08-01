@@ -45,4 +45,13 @@ export class Order {
     }, 0);
     this.value = orderValue;
   }
+
+  checkUnavailableProduct(productsList: Product[]): Product | null {
+    const insufficientAmount = productsList.find(({ id, quantity }) => {
+      const productIndex = this.products.findIndex(p => p.id === id);
+      return quantity < this.products[productIndex].quantity;
+    });
+
+    return insufficientAmount || null;
+  }
 }
