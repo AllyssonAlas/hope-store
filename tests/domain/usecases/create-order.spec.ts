@@ -1,9 +1,12 @@
 import { mock, MockProxy } from 'jest-mock-extended';
 
+import { Order } from '@/domain/entities';
 import { setupCreateOrder, CreateOrder } from '@/domain/usecases';
 import { LoadProductsListRepository, SaveOrderRepository } from '@/domain/contracts/repositories';
 import { PostalCodeApi } from '@/domain/contracts/gateways';
 import { ProductNotFoundError, InsufficientProductAmountError, InvalidAddressError } from '@/domain/errors';
+
+jest.mock('@/domain/entities/order');
 
 describe('CreateProduct', () => {
   let sut: CreateOrder;
@@ -132,23 +135,7 @@ describe('CreateProduct', () => {
   it('Should call SaveOrderRespository with correct input', async () => {
     await sut(input);
 
-    expect(orderRepository.save).toHaveBeenCalledWith({
-      userId: 'any_user_id',
-      products: [
-        { id: 'any_product_id_1', quantity: 1 },
-        { id: 'any_product_id_2', quantity: 5 },
-      ],
-      contact: 'any_contact_@gmail.com',
-      address: {
-        street: 'any_street_name',
-        number: 'any_number_name',
-        neighborhood: 'any_neighborhood_name',
-        city: 'any_city_name',
-        postalCode: 'any_postalCode_name',
-      },
-      status: 'pending',
-      value: 110,
-    });
+    expect(orderRepository.save).toHaveBeenCalledWith(jest.mocked(Order).mock.instances[0]);
     expect(orderRepository.save).toHaveBeenCalledTimes(1);
   });
 
