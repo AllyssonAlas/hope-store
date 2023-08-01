@@ -1,3 +1,5 @@
+import { Product } from '@/domain/entities';
+
 type OrderData = {
   userId: string;
   products: Array <{ id: string; quantity: number }>;
@@ -34,5 +36,13 @@ export class Order {
     this.address = orderData.address;
     this.status = orderData.status;
     this.value = orderData.value || 0;
+  }
+
+  calculateValue(productsList: Product[]) {
+    const orderValue = productsList.reduce((total, { id, price }) => {
+      const productIndex = this.products.findIndex(p => p.id === id);
+      return total + price * this.products[productIndex].quantity;
+    }, 0);
+    this.value = orderValue;
   }
 }
