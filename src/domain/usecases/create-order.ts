@@ -28,17 +28,14 @@ type Setup = (
 
 export const setupCreateOrder: Setup = (productRepo, postalCode, orderRepo) => {
   return async ({ products, address, ...rest }) => {
-    const productsIds = products.map(({ id }) => id);
-    const productsData = await productRepo.loadList({ ids: productsIds });
-    const checkProductNotFound = productsIds.find(id => !productsData.find(product => product.id === id));
+    const productsData = await productRepo.loadList({ ids: products.map(({ id }) => id) });
+    const order = new Order({ products, address, status: 'pending', ...rest });
+    const checkProductNotFound = order.checkUnexistingProduct(productsData);
     if (checkProductNotFound) {
       throw new ProductNotFoundError(checkProductNotFound);
     }
-    const checkInsufficientAmount = productsData.find(({ id, quantity }) => {
-      const productIndex = products.findIndex(p => p.id === id);
-      return quantity < products[productIndex].quantity;
-    });
-    if (checkInsufficientAmount) {
+    const checkInsufficientAmount = order.checkUnavailableProduct(productsData);
+    if (checkInsufficientAmount?.id) {
       throw new InsufficientProductAmountError(
         checkInsufficientAmount.id,
         checkInsufficientAmount.quantity,
@@ -48,7 +45,6 @@ export const setupCreateOrder: Setup = (productRepo, postalCode, orderRepo) => {
     if (!postalCodeResponse) {
       throw new InvalidAddressError();
     }
-    const order = new Order({ products, address, status: 'pending', ...rest });
     order.calculateValue(productsData);
     await orderRepo.save(order);
   };
