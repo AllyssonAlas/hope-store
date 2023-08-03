@@ -83,36 +83,22 @@ describe('CreateProduct', () => {
     expect(productRepository.loadList).toHaveBeenCalledTimes(1);
   });
 
-  it('Should throw ProductNotFoundError if product list length returned by LoadProductsListRepository is smaller than input products length ', async () => {
-    jest.mocked(Order).mockImplementationOnce(() => ({
-      ...input,
-      status: 'pending',
-      value: 50,
-      calculateValue: jest.fn(),
-      checkUnavailableProduct: jest.fn(),
-      checkUnexistingProduct: jest.fn().mockReturnValueOnce('any_product_id_1'),
-    }));
+  it('Should throw ProductNotFoundError if Order returns a product id', async () => {
+    jest.spyOn(Order.prototype, 'checkUnexistingProduct').mockReturnValueOnce('any_product_id_1');
 
     const promise = sut(input);
 
     await expect(promise).rejects.toThrow(new ProductNotFoundError('any_product_id_1'));
   });
 
-  it('Should throw InsufficientProductAmountError if amount required is higher than returned by LoadProductsListRepository', async () => {
-    jest.mocked(Order).mockImplementationOnce(() => ({
-      ...input,
-      status: 'pending',
-      value: 50,
-      calculateValue: jest.fn(),
-      checkUnavailableProduct: jest.fn().mockReturnValueOnce({
-        id: 'any_product_id_1',
-        description: 'any_product_description',
-        name: 'any_product_name',
-        price: 10,
-        quantity: 2,
-      }),
-      checkUnexistingProduct: jest.fn(),
-    }));
+  it('Should throw InsufficientProductAmountError if Order checkUnavailableProduct returns a product', async () => {
+    jest.spyOn(Order.prototype, 'checkUnavailableProduct').mockReturnValueOnce({
+      id: 'any_product_id_1',
+      description: 'any_product_description',
+      name: 'any_product_name',
+      price: 10,
+      quantity: 2,
+    });
 
     const promise = sut({ ...input, products: [{ id: 'any_product_id_1', quantity: 99 }] });
 
