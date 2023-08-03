@@ -83,16 +83,16 @@ describe('CreateProduct', () => {
     expect(productRepository.loadList).toHaveBeenCalledTimes(1);
   });
 
-  it('Should throw ProductNotFoundError if Order returns a product id', async () => {
-    jest.spyOn(Order.prototype, 'checkUnexistingProduct').mockReturnValueOnce('any_product_id_1');
+  it('Should throw ProductNotFoundError if Order findInvalidProductId returns a product id', async () => {
+    jest.spyOn(Order.prototype, 'findInvalidProductId').mockReturnValueOnce('any_product_id_1');
 
     const promise = sut(input);
 
     await expect(promise).rejects.toThrow(new ProductNotFoundError('any_product_id_1'));
   });
 
-  it('Should throw InsufficientProductAmountError if Order checkUnavailableProduct returns a product', async () => {
-    jest.spyOn(Order.prototype, 'checkUnavailableProduct').mockReturnValueOnce({
+  it('Should throw InsufficientProductAmountError if Order findUnavailableAmount returns a product', async () => {
+    jest.spyOn(Order.prototype, 'findUnavailableAmount').mockReturnValueOnce({
       id: 'any_product_id_1',
       description: 'any_product_description',
       name: 'any_product_name',

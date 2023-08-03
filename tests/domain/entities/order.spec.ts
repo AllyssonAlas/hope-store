@@ -40,7 +40,7 @@ describe('Order', () => {
     ];
   });
 
-  it('Should create an order', () => {
+  it('Should create an order with value', () => {
     const sut = new Order({ ...orderData, value: 50 });
 
     expect(sut).toEqual({
@@ -62,8 +62,8 @@ describe('Order', () => {
     });
   });
 
-  it('Should calculate order value', () => {
-    const sut = new Order({ ...orderData });
+  it('Should create an order without value', () => {
+    const sut = new Order(orderData);
 
     expect(sut).toEqual({
       userId: 'any_user_id',
@@ -86,6 +86,7 @@ describe('Order', () => {
 
   it('Should create an order with method', () => {
     const sut = new Order(orderData);
+
     sut.calculateValue(products);
 
     expect(sut).toEqual({
@@ -107,30 +108,30 @@ describe('Order', () => {
     });
   });
 
-  it('Should return an unavailable product', () => {
-    const unavailableRequest = [{ id: 'any_product_id_1', quantity: 100 }];
+  it('Should return a product if amount requested is higher than stored', () => {
+    const invalidRequest = [{ id: 'any_product_id_1', quantity: 100 }];
 
-    const sut = new Order({ ...orderData, products: unavailableRequest }).checkUnavailableProduct(products);
+    const sut = new Order({ ...orderData, products: invalidRequest }).findUnavailableAmount(products);
 
     expect(sut).toMatchObject({ id: 'any_product_id_1', quantity: 99 });
   });
 
-  it('Should return an null', () => {
-    const sut = new Order({ ...orderData }).checkUnavailableProduct(products);
+  it('Should return null if any amount requested is not higher than stored', () => {
+    const sut = new Order(orderData).findUnavailableAmount(products);
 
     expect(sut).toBeNull();
   });
 
-  it('Should return an unexisting product', () => {
+  it('Should return an invalid product id not found inside products list', () => {
     const unavailableRequest = [{ id: 'any_product_id_3', quantity: 1 }];
 
-    const sut = new Order({ ...orderData, products: unavailableRequest }).checkUnexistingProduct(products);
+    const sut = new Order({ ...orderData, products: unavailableRequest }).findInvalidProductId(products);
 
     expect(sut).toBe('any_product_id_3');
   });
 
-  it('Should return undefined', () => {
-    const sut = new Order({ ...orderData }).checkUnexistingProduct(products);
+  it('Should return undefined is all products were found inside products list', () => {
+    const sut = new Order(orderData).findInvalidProductId(products);
 
     expect(sut).toBeUndefined();
   });

@@ -30,11 +30,11 @@ export const setupCreateOrder: Setup = (productRepo, postalCode, orderRepo) => {
   return async ({ products, address, ...rest }) => {
     const productsData = await productRepo.loadList({ ids: products.map(({ id }) => id) });
     const order = new Order({ products, address, status: 'pending', ...rest });
-    const checkProductNotFound = order.checkUnexistingProduct(productsData);
+    const checkProductNotFound = order.findInvalidProductId(productsData);
     if (checkProductNotFound) {
       throw new ProductNotFoundError(checkProductNotFound);
     }
-    const checkInsufficientAmount = order.checkUnavailableProduct(productsData);
+    const checkInsufficientAmount = order.findUnavailableAmount(productsData);
     if (checkInsufficientAmount?.id) {
       throw new InsufficientProductAmountError(
         checkInsufficientAmount.id,

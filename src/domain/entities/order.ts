@@ -46,18 +46,18 @@ export class Order {
     this.value = orderValue;
   }
 
-  checkUnavailableProduct(productsList: Product[]): Product | null {
-    const insufficientAmount = productsList.find(({ id, quantity }) => {
+  findUnavailableAmount(productsList: Product[]): Product | null {
+    const product = productsList.find(({ id, quantity }) => {
       const productIndex = this.products.findIndex(p => p.id === id);
       return quantity < this.products[productIndex].quantity;
     });
-    return insufficientAmount || null;
+    return product || null;
   }
 
-  checkUnexistingProduct(productsList: Product[]): string | undefined {
-    const checkProductNotFound = this.products.find(({ id }) => {
+  findInvalidProductId(productsList: Product[]): string | undefined {
+    const product = this.products.find(({ id }) => {
       return !productsList.find(product => product.id === id);
     });
-    return checkProductNotFound?.id;
+    return product?.id;
   }
 }
