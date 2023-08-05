@@ -13,14 +13,15 @@ export namespace SaveOrderRepository {
       neighborhood: string;
       city: string;
       postalCode: string;
-    },
+    };
     status: string;
     value: number;
   };
 
   export type Output = {
-    id: string,
+    id: string;
     products: Array <{ id: string; quantity: number }>;
     status: string;
+    value: number;
   }
 }

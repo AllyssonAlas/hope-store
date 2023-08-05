@@ -19,7 +19,15 @@ type Input = {
     postalCode: string
   }
 }
-export type CreateOrder = (input: Input) => Promise<void>;
+type Output = {
+  products: Array<{
+    id: string
+    quantity: number
+  }>
+  status: string
+  value: number
+}
+export type CreateOrder = (input: Input) => Promise<Output>;
 type Setup = (
   productRepo: LoadProductsListRepository,
   postalCode: PostalCodeApi,
@@ -46,6 +54,7 @@ export const setupCreateOrder: Setup = (productRepo, postalCode, orderRepo) => {
       throw new InvalidAddressError();
     }
     order.calculateValue(productsData);
-    await orderRepo.save(order);
+    const orderData = await orderRepo.save(order);
+    return orderData;
   };
 };
