@@ -70,6 +70,15 @@ describe('CreateProduct', () => {
       },
     };
     orderRepository = mock();
+    orderRepository.save.mockResolvedValue({
+      id: 'any_order_id',
+      products: [
+        { id: 'any_product_id_1', quantity: 1 },
+        { id: 'any_product_id_2', quantity: 5 },
+      ],
+      status: 'pending',
+      value: 110,
+    });
   });
 
   beforeEach(() => {
@@ -143,5 +152,19 @@ describe('CreateProduct', () => {
     const promise = sut(input);
 
     await expect(promise).rejects.toThrow(new Error('save_order_repository_error'));
+  });
+
+  it('Should return order data', async () => {
+    const result = await sut(input);
+
+    expect(result).toEqual({
+      id: 'any_order_id',
+      products: [
+        { id: 'any_product_id_1', quantity: 1 },
+        { id: 'any_product_id_2', quantity: 5 },
+      ],
+      status: 'pending',
+      value: 110,
+    });
   });
 });
