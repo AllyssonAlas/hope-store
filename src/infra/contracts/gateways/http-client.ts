@@ -5,6 +5,6 @@ export interface HttpGetClient {
 export namespace HttpGetClient {
   export type Input = {
     url: string;
-    params: object;
+    params?: object;
   };
 }
