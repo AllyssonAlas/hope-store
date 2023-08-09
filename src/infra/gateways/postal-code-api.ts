@@ -15,14 +15,19 @@ export class PostalCodeApi {
 
   constructor(private readonly httpClient: HttpGetClient) {}
 
-  async getAddress({ postalCode }: PostalCode.Input): Promise<any> {
+  async getAddress({ postalCode }: PostalCode.Input): Promise<PostalCode.Output> {
     try {
-      await this.httpClient.get<ApiAddress>({ url: this.baseUrl + postalCode });
+      const response = await this.httpClient.get<ApiAddress>({ url: this.baseUrl + postalCode });
+      return {
+        city: response.city,
+        neighborhood: response.neighborhood,
+        postalCode: response.cep,
+        street: response.street,
+      };
     } catch (error) {
       if (axios.isAxiosError(error) && error.status && error?.status < 500) {
         return null;
       }
-
       throw error;
     }
   }
