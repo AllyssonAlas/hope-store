@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 
 import { HasherGenerator, HasherComparer } from '@/domain/contracts/gateways';
 
-export class BcryptAdapter implements HasherGenerator {
+export class BcryptAdapter implements HasherGenerator, HasherComparer {
   constructor(private readonly salt: number) {}
 
   async generate({ plaintext }: HasherGenerator.Input): Promise<HasherGenerator.Output> {
