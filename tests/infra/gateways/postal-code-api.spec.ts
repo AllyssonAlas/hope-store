@@ -9,6 +9,12 @@ describe('PostalCodeApi', () => {
 
   beforeAll(() => {
     httpClient = mock();
+    httpClient.get.mockResolvedValue({
+      cep: 'any_postal_code',
+      city: 'any_city',
+      neighborhood: 'any_neighborhood',
+      street: 'any_street',
+    });
   });
 
   beforeEach(() => {
@@ -21,5 +27,13 @@ describe('PostalCodeApi', () => {
     expect(httpClient.get).toHaveBeenCalledWith({
       url: `https://brasilapi.com.br/api/cep/v2/${postalCode}`,
     });
+  });
+
+  it('Should throw if HttpClient throws', async () => {
+    httpClient.get.mockRejectedValueOnce(new Error('http_client_error'));
+
+    const promise = sut.getAddress({ postalCode });
+
+    await expect(promise).rejects.toThrow(new Error('http_client_error'));
   });
 });
