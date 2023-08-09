@@ -1,4 +1,5 @@
 import { mock, MockProxy } from 'jest-mock-extended';
+import { AxiosError } from 'axios';
 
 import { PostalCodeApi, AxiosHttpClient } from '@/infra/gateways';
 
@@ -35,5 +36,16 @@ describe('PostalCodeApi', () => {
     const promise = sut.getAddress({ postalCode });
 
     await expect(promise).rejects.toThrow(new Error('http_client_error'));
+  });
+
+  it('Should return null if httpClient returns 400', async () => {
+    const mockAxiosError = new AxiosError('any_axios_error');
+    mockAxiosError.status = 400;
+
+    httpClient.get.mockRejectedValueOnce(mockAxiosError);
+
+    const result = await sut.getAddress({ postalCode });
+
+    expect(result).toBeNull();
   });
 });
