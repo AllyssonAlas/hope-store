@@ -30,15 +30,7 @@ describe('PostalCodeApi', () => {
     });
   });
 
-  it('Should throw if HttpClient throws', async () => {
-    httpClient.get.mockRejectedValueOnce(new Error('http_client_error'));
-
-    const promise = sut.getAddress({ postalCode });
-
-    await expect(promise).rejects.toThrow(new Error('http_client_error'));
-  });
-
-  it('Should return null if httpClient returns 400', async () => {
+  it('Should return null if httpClient get fails', async () => {
     const mockAxiosError = new AxiosError('any_axios_error');
     mockAxiosError.status = 400;
 

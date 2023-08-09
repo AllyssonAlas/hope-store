@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 import { PostalCodeApi as PostalCode } from '@/domain/contracts/gateways';
 import { HttpGetClient } from '@/infra/contracts/gateways';
 
@@ -25,10 +23,7 @@ export class PostalCodeApi {
         street: response.street,
       };
     } catch (error) {
-      if (axios.isAxiosError(error) && error.status && error?.status < 500) {
-        return null;
-      }
-      throw error;
+      return null;
     }
   }
 }
