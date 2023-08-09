@@ -48,4 +48,15 @@ describe('PostalCodeApi', () => {
 
     expect(result).toBeNull();
   });
+
+  it('Should return correct data on success', async () => {
+    const result = await sut.getAddress({ postalCode });
+
+    expect(result).toEqual({
+      postalCode: 'any_postal_code',
+      city: 'any_city',
+      neighborhood: 'any_neighborhood',
+      street: 'any_street',
+    });
+  });
 });
