@@ -1,8 +1,8 @@
-export interface PostalCodeApi {
-  getAddress: (input: PostalCodeApi.Input) => Promise<PostalCodeApi.Output>;
+export interface PostalCode {
+  getAddress: (input: PostalCode.Input) => Promise<PostalCode.Output>;
 }
 
-export namespace PostalCodeApi {
+export namespace PostalCode {
   export type Input = {
     postalCode: string;
   };

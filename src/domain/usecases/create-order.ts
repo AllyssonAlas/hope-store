@@ -1,7 +1,7 @@
 
 import { Order } from '@/domain/entities';
 import { LoadProductsListRepository, SaveOrderRepository } from '@/domain/contracts/repositories';
-import { PostalCodeApi } from '@/domain/contracts/gateways';
+import { PostalCode } from '@/domain/contracts/gateways';
 import { ProductNotFoundError, InsufficientProductAmountError, InvalidAddressError } from '@/domain/errors';
 
 type Input = {
@@ -30,7 +30,7 @@ type Output = {
 export type CreateOrder = (input: Input) => Promise<Output>;
 type Setup = (
   productRepo: LoadProductsListRepository,
-  postalCode: PostalCodeApi,
+  postalCode: PostalCode,
   orderRepo: SaveOrderRepository
 ) => CreateOrder
 

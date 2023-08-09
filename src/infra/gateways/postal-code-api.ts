@@ -1,4 +1,4 @@
-import { PostalCodeApi as PostalCode } from '@/domain/contracts/gateways';
+import { PostalCode } from '@/domain/contracts/gateways';
 import { HttpGetClient } from '@/infra/contracts/gateways';
 
 type ApiAddress = {
@@ -8,7 +8,7 @@ type ApiAddress = {
   street: string;
 }
 
-export class PostalCodeApi {
+export class PostalCodeApi implements PostalCode {
   private readonly baseUrl = 'https://brasilapi.com.br/api/cep/v2/';
 
   constructor(private readonly httpClient: HttpGetClient) {}

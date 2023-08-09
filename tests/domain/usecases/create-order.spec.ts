@@ -3,7 +3,7 @@ import { mock, MockProxy } from 'jest-mock-extended';
 import { Order } from '@/domain/entities';
 import { setupCreateOrder, CreateOrder } from '@/domain/usecases';
 import { LoadProductsListRepository, SaveOrderRepository } from '@/domain/contracts/repositories';
-import { PostalCodeApi } from '@/domain/contracts/gateways';
+import { PostalCode } from '@/domain/contracts/gateways';
 import { ProductNotFoundError, InsufficientProductAmountError, InvalidAddressError } from '@/domain/errors';
 
 jest.mock('@/domain/entities/order');
@@ -11,7 +11,7 @@ jest.mock('@/domain/entities/order');
 describe('CreateProduct', () => {
   let sut: CreateOrder;
   let productRepository: MockProxy<LoadProductsListRepository>;
-  let postalCodeApi: MockProxy<PostalCodeApi>;
+  let postalCodeApi: MockProxy<PostalCode>;
   let orderRepository: MockProxy<SaveOrderRepository>;
   let input: {
     userId: string
