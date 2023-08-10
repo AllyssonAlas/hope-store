@@ -40,4 +40,76 @@ describe('PgProductRepository', () => {
       expect(product?.quantity).toBe(2);
     });
   });
+
+  describe('loadList', () => {
+    it('Should return a product list', async () => {
+      const newDate = new Date();
+
+      await prisma.product.createMany({
+        data: [
+          {
+            id: 'product_id_1',
+            name: 'any_product_name',
+            description: 'any_product_description',
+            price: 50,
+            quantity: 10,
+            createdAt: newDate,
+            updatedAt: newDate,
+          },
+          {
+            id: 'product_id_2',
+            name: 'any_product_name',
+            description: 'any_product_description',
+            price: 10,
+            quantity: 50,
+            createdAt: newDate,
+            updatedAt: newDate,
+          },
+        ],
+      });
+
+      const productsList = await sut.loadList({ ids: ['product_id_1', 'product_id_2'] });
+
+      expect(productsList).toEqual([
+        {
+          id: 'product_id_1',
+          name: 'any_product_name',
+          description: 'any_product_description',
+          price: 50,
+          quantity: 10,
+          createdAt: newDate,
+          updatedAt: newDate,
+        },
+        {
+          id: 'product_id_2',
+          name: 'any_product_name',
+          description: 'any_product_description',
+          price: 10,
+          quantity: 50,
+          createdAt: newDate,
+          updatedAt: newDate,
+        },
+      ]);
+      expect(productsList).toHaveLength(2);
+    });
+
+    it('Should return an empty product list', async () => {
+      await prisma.product.createMany({
+        data: [
+          {
+            id: 'product_id_1',
+            name: 'any_product_name',
+            description: 'any_product_description',
+            price: 50,
+            quantity: 10,
+          },
+        ],
+      });
+
+      const productsList = await sut.loadList({ ids: ['product_id_2', 'product_id_3'] });
+
+      expect(productsList).toEqual([]);
+      expect(productsList).toHaveLength(0);
+    });
+  });
 });
