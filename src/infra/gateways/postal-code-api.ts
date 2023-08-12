@@ -6,6 +6,7 @@ type ApiAddress = {
   city: string;
   neighborhood: string;
   street: string;
+  state: string;
 }
 
 export class PostalCodeApi implements PostalCode {
@@ -21,6 +22,7 @@ export class PostalCodeApi implements PostalCode {
         neighborhood: response.neighborhood,
         postalCode: response.cep,
         street: response.street,
+        state: response.state,
       };
     } catch (error) {
       return null;

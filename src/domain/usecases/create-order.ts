@@ -17,6 +17,7 @@ type Input = {
     neighborhood: string
     city: string
     postalCode: string
+    state: string
   }
 }
 type Output = {

@@ -12,6 +12,7 @@ export namespace SaveOrderRepository {
       number: string;
       neighborhood: string;
       city: string;
+      state: string;
       postalCode: string;
     };
     status: string;

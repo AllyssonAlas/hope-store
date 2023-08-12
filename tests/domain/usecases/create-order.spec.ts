@@ -25,6 +25,7 @@ describe('CreateProduct', () => {
       number: string
       neighborhood: string
       city: string
+      state: string
       postalCode: string
     }
   };
@@ -50,9 +51,10 @@ describe('CreateProduct', () => {
     postalCodeApi = mock();
     postalCodeApi.getAddress.mockResolvedValue({
       street: 'any_street_name',
-      neighborhood: 'any_neighborhood_name',
-      city: 'any_city_name',
-      postalCode: 'any_postalCode_name',
+      neighborhood: 'any_neighborhood',
+      city: 'any_city',
+      postalCode: 'any_postalCode',
+      state: 'any_state',
     });
     input = {
       userId: 'any_user_id',
@@ -62,11 +64,12 @@ describe('CreateProduct', () => {
       ],
       contact: 'any_contact_@gmail.com',
       address: {
-        street: 'any_street_name',
-        number: 'any_number_name',
-        neighborhood: 'any_neighborhood_name',
-        city: 'any_city_name',
-        postalCode: 'any_postalCode_name',
+        number: 'any_number',
+        street: 'any_street',
+        neighborhood: 'any_neighborhood',
+        city: 'any_city',
+        postalCode: 'any_postal_code',
+        state: 'any_state',
       },
     };
     orderRepository = mock();
@@ -126,7 +129,7 @@ describe('CreateProduct', () => {
     await sut(input);
 
     expect(postalCodeApi.getAddress).toHaveBeenCalledWith({
-      postalCode: 'any_postalCode_name',
+      postalCode: 'any_postal_code',
     });
     expect(postalCodeApi.getAddress).toHaveBeenCalledTimes(1);
   });

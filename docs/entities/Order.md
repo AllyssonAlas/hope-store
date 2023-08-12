@@ -12,6 +12,7 @@
     number: string
     neighborhood: string
     city: string
+    state: string
     postalCode: string
 }
 - value: number

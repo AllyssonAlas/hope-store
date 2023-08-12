@@ -9,6 +9,7 @@ type OrderData = {
     number: string;
     neighborhood: string;
     city: string;
+    state: string;
     postalCode: string;
   };
   status: string;
@@ -26,6 +27,7 @@ export class Order {
     number: string;
     neighborhood: string;
     city: string;
+    state: string;
     postalCode: string;
   };
 
