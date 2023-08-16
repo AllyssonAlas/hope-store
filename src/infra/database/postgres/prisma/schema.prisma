@@ -15,7 +15,7 @@ model User {
   name        String
   email       String   @unique
   password    String
-  roleId      Role     @relation(fields: [role], references: [name])
+  roleId      Role     @relation(fields: [role], references: [name], onDelete: Cascade)
   role        String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @default(now())
@@ -62,12 +62,12 @@ model Address {
 
 model Order {
   id           String   @id @default(uuid())
-  user         User     @relation(fields: [userId], references: [id])
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade )
   userId       String
   products     Json
   contact      String
   status       String
-  address      Address  @relation(fields: [addressId], references: [id])
+  address      Address  @relation(fields: [addressId], references: [id], onDelete: Cascade)
   value        Decimal  @db.Money
   createdAt    DateTime @default(now())
   updatedAt    DateTime @default(now())
