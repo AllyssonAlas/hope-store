@@ -11,41 +11,65 @@ datasource db {
 }
 
 model User {
-  id                String        @id @default(uuid())
-  name              String
-  email             String        @unique
-  password          String
-  roleId            Role          @relation(fields: [role], references: [name])
-  role              String
-  createdAt         DateTime      @default(now())
-  updatedAt         DateTime      @default(now())
+  id          String   @id @default(uuid())
+  name        String
+  email       String   @unique
+  password    String
+  roleId      Role     @relation(fields: [role], references: [name])
+  role        String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
+  Order       Order[]
 }
 
 model Role {
-  id                String        @id @default(uuid())
-  name              String        @unique
-  users             User[]
-  permissions       Permission[]
-  createdAt         DateTime      @default(now())
-  updatedAt         DateTime      @default(now())
+  id          String       @id @default(uuid())
+  name        String       @unique
+  users       User[]
+  permissions Permission[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @default(now())
 }
-
 
 model Permission {
-  id                String        @id @default(uuid())
-  name              String        @unique
-  roles             Role[]
-  createdAt         DateTime      @default(now())
-  updatedAt         DateTime      @default(now())
+  id          String   @id @default(uuid())
+  name        String   @unique
+  roles       Role[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
 }
 
-
 model Product {
-  id                String        @id @default(uuid())
-  name              String
-  description       String
-  price             Decimal       @db.Money
-  quantity          Int
-  createdAt         DateTime      @default(now())
-  updatedAt         DateTime      @default(now())
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  price       Decimal  @db.Money
+  quantity    Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
+}
+
+model Address {
+  id           String  @id @default(uuid())
+  street       String
+  number       String
+  neighborhood String
+  city         String
+  state        String
+  postalCode   String
+  Order        Order?
+}
+
+model Order {
+  id           String   @id @default(uuid())
+  user         User     @relation(fields: [userId], references: [id])
+  userId       String
+  products     Json
+  contact      String
+  status       String
+  address      Address  @relation(fields: [addressId], references: [id])
+  value        Decimal  @db.Money
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now())
+  addressId    String   @unique
 }
