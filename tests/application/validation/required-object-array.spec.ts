@@ -9,4 +9,12 @@ describe('RequiredObjectArrayValidator', () => {
 
     expect(error).toEqual(new InvalidRequiredParamError('any_field'));
   });
+
+  it('Should return undefined if value is an array', () => {
+    const sut = new RequiredObjectArrayValidator([], 'any_field');
+
+    const error = sut.validate();
+
+    expect(error).toBeUndefined();
+  });
 });
