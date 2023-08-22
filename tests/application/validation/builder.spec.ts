@@ -5,6 +5,7 @@ import {
   RequiredMinLengthValidator,
   RequiredNumberValidator,
   RequiredIntegerValidator,
+  RequiredArrayValidator,
   ValidationBuilder,
 } from '@/application/validation';
 
@@ -60,5 +61,14 @@ describe('ValidationBuilder', () => {
       .build();
 
     expect(validators).toEqual([new RequiredIntegerValidator(10, 'any_name')]);
+  });
+
+  it('Should return a RequiredArrayValidator', () => {
+    const validators = ValidationBuilder
+      .of({ value: [], fieldName: 'any_name' })
+      .required('array')
+      .build();
+
+    expect(validators).toEqual([new RequiredArrayValidator([], 'any_name')]);
   });
 });
