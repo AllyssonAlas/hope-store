@@ -5,6 +5,7 @@ import {
   RequiredNumberValidator,
   RequiredIntegerValidator,
   RequiredMinValueValidator,
+  RequiredArrayValidator,
   Validator,
 } from '@/application/validation';
 
@@ -26,6 +27,8 @@ export class ValidationBuilder {
       this.validators.push(new RequiredNumberValidator(this.value, this.fieldName));
     } else if (valitorType === 'integer') {
       this.validators.push(new RequiredIntegerValidator(this.value, this.fieldName));
+    } else if (valitorType === 'array') {
+      this.validators.push(new RequiredArrayValidator(this.value, this.fieldName));
     }
     return this;
   }
