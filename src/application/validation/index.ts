@@ -6,4 +6,5 @@ export * from './required-min-length';
 export * from './required-number';
 export * from './required-min-value';
 export * from './required-string';
+export * from './required-object-array';
 export * from './validator';
