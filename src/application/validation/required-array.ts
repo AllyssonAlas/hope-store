@@ -1,6 +1,6 @@
 import { InvalidRequiredParamError } from '@/application/errors';
 
-export class RequiredObjectArrayValidator {
+export class RequiredArrayValidator {
   constructor(private readonly value: Array<any>, private readonly fieldName: string) {}
 
   validate(): Error | undefined {

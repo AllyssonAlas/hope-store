@@ -1,9 +1,9 @@
-import { RequiredObjectArrayValidator } from '@/application/validation';
+import { RequiredArrayValidator } from '@/application/validation';
 import { InvalidRequiredParamError } from '@/application/errors';
 
-describe('RequiredObjectArrayValidator', () => {
+describe('RequiredArrayValidator', () => {
   it('Should return InvalidRequiredParamError if value is not an array', () => {
-    const sut = new RequiredObjectArrayValidator('' as any, 'any_field');
+    const sut = new RequiredArrayValidator('' as any, 'any_field');
 
     const error = sut.validate();
 
@@ -11,7 +11,7 @@ describe('RequiredObjectArrayValidator', () => {
   });
 
   it('Should return undefined if value is an array', () => {
-    const sut = new RequiredObjectArrayValidator([], 'any_field');
+    const sut = new RequiredArrayValidator([], 'any_field');
 
     const error = sut.validate();
 
