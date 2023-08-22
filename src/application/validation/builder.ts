@@ -43,7 +43,7 @@ export class ValidationBuilder {
     return this;
   }
 
-  miValue(value: number): ValidationBuilder {
+  minValue(value: number): ValidationBuilder {
     this.validators.push(new RequiredMinValueValidator(value, this.value, this.fieldName));
     return this;
   }
