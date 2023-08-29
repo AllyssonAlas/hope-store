@@ -1,7 +1,7 @@
 import { CreateOrder } from '@/domain/usecases';
 import { Controller } from '@/application/controllers';
 import { ValidationBuilder as Builder, Validator } from '@/application/validation';
-import { badRequest } from '@/application/helpers';
+import { HttpResponse, badRequest, ok } from '@/application/helpers';
 
 type HttpRequest = {
   userId: string
@@ -20,14 +20,24 @@ type HttpRequest = {
   }
 }
 
+type Model = {
+  products: Array<{
+    id: string
+    quantity: number
+  }>
+  status: string
+  value: number
+} | Error ;
+
 export class CreateOrderController extends Controller {
   constructor(private readonly createOrder: CreateOrder) {
     super();
   }
 
-  async perform(httpRequest: HttpRequest):Promise<any> {
+  async perform(httpRequest: HttpRequest):Promise<HttpResponse<Model> | any> {
     try {
-      await this.createOrder(httpRequest);
+      const result = await this.createOrder(httpRequest);
+      return ok(result);
     } catch (error) {
       if (error instanceof Error) {
         return badRequest(error);
