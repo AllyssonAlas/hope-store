@@ -1,6 +1,7 @@
 import { CreateOrder } from '@/domain/usecases';
 import { Controller } from '@/application/controllers';
 import { ValidationBuilder as Builder, Validator } from '@/application/validation';
+import { badRequest } from '@/application/helpers';
 
 type HttpRequest = {
   userId: string
@@ -25,7 +26,13 @@ export class CreateOrderController extends Controller {
   }
 
   async perform(httpRequest: HttpRequest):Promise<any> {
-    await this.createOrder(httpRequest);
+    try {
+      await this.createOrder(httpRequest);
+    } catch (error) {
+      if (error instanceof Error) {
+        return badRequest(error);
+      }
+    }
   }
 
   buildValidators({ userId, products, contact, address }: HttpRequest): Validator[] {
