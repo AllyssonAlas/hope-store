@@ -7,6 +7,7 @@ import {
 
 describe('CreateOrderController', () => {
   let sut: CreateOrderController;
+  let createOrder: jest.Mock;
   let request: {
     userId: string
     products: Array<{
@@ -25,6 +26,7 @@ describe('CreateOrderController', () => {
   };
 
   beforeAll(() => {
+    createOrder = jest.fn();
     request = {
       userId: 'any_user_id',
       products: [
@@ -44,7 +46,7 @@ describe('CreateOrderController', () => {
   });
 
   beforeEach(() => {
-    sut = new CreateOrderController();
+    sut = new CreateOrderController(createOrder);
   });
 
   it('Should build validators correctly', () => {
@@ -62,5 +64,27 @@ describe('CreateOrderController', () => {
       new RequiredStringValidator(request.address.state, 'state'),
       new RequiredStringValidator(request.address.postalCode, 'postalCode'),
     ]);
+  });
+
+  it('Should call CreateOrder with correct input', async () => {
+    await sut.handle(request);
+
+    expect(createOrder).toHaveBeenCalledWith({
+      userId: 'any_user_id',
+      products: [
+        { id: 'any_product_id_1', quantity: 1 },
+        { id: 'any_product_id_2', quantity: 5 },
+      ],
+      contact: 'any_contact_@gmail.com',
+      address: {
+        number: 'any_number',
+        street: 'any_street',
+        neighborhood: 'any_neighborhood',
+        city: 'any_city',
+        postalCode: 'any_postal_code',
+        state: 'any_state',
+      },
+    });
+    expect(createOrder).toHaveBeenCalledTimes(1);
   });
 });
