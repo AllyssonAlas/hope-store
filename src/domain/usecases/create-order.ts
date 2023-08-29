@@ -27,7 +27,7 @@ type Output = {
   }>
   status: string
   value: number
-}
+} | Error
 export type CreateOrder = (input: Input) => Promise<Output>;
 type Setup = (
   productRepo: LoadProductsListRepository,
@@ -41,18 +41,18 @@ export const setupCreateOrder: Setup = (productRepo, postalCode, orderRepo) => {
     const order = new Order({ products, address, status: 'pending', ...rest });
     const checkProductNotFound = order.findInvalidProductId(productsData);
     if (checkProductNotFound) {
-      throw new ProductNotFoundError(checkProductNotFound);
+      return new ProductNotFoundError(checkProductNotFound);
     }
     const checkInsufficientAmount = order.findUnavailableAmount(productsData);
     if (checkInsufficientAmount?.id) {
-      throw new InsufficientProductAmountError(
+      return new InsufficientProductAmountError(
         checkInsufficientAmount.id,
         checkInsufficientAmount.quantity,
       );
     }
     const postalCodeResponse = await postalCode.getAddress({ postalCode: address.postalCode });
     if (!postalCodeResponse) {
-      throw new InvalidAddressError();
+      return new InvalidAddressError();
     }
     order.calculateValue(productsData);
     const orderData = await orderRepo.save(order);

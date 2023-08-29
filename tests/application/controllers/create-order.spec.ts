@@ -96,8 +96,8 @@ describe('CreateOrderController', () => {
     expect(createOrder).toHaveBeenCalledTimes(1);
   });
 
-  it('Should return 400 if CreateOrder throws an error', async () => {
-    createOrder.mockRejectedValueOnce(new InvalidAddressError());
+  it('Should return 400 if CreateOrder returns an error', async () => {
+    createOrder.mockResolvedValueOnce(new InvalidAddressError());
 
     const response = await sut.handle(request);
 

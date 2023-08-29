@@ -95,12 +95,12 @@ describe('CreateProduct', () => {
     expect(productRepository.loadList).toHaveBeenCalledTimes(1);
   });
 
-  it('Should throw ProductNotFoundError if Order findInvalidProductId returns a product id', async () => {
+  it('Should return ProductNotFoundError if Order findInvalidProductId returns a product id', async () => {
     jest.spyOn(Order.prototype, 'findInvalidProductId').mockReturnValueOnce('any_product_id_1');
 
-    const promise = sut(input);
+    const result = await sut(input);
 
-    await expect(promise).rejects.toThrow(new ProductNotFoundError('any_product_id_1'));
+    expect(result).toEqual(new ProductNotFoundError('any_product_id_1'));
   });
 
   it('Should throw InsufficientProductAmountError if Order findUnavailableAmount returns a product', async () => {
@@ -112,9 +112,9 @@ describe('CreateProduct', () => {
       quantity: 2,
     });
 
-    const promise = sut({ ...input, products: [{ id: 'any_product_id_1', quantity: 99 }] });
+    const result = await sut({ ...input, products: [{ id: 'any_product_id_1', quantity: 99 }] });
 
-    await expect(promise).rejects.toThrow(new InsufficientProductAmountError('any_product_id_1', 2));
+    expect(result).toEqual(new InsufficientProductAmountError('any_product_id_1', 2));
   });
 
   it('Should rethrow if LoadProductsListRepository throws', async () => {
@@ -137,9 +137,9 @@ describe('CreateProduct', () => {
   it('Should return InvalidAddressError if PostalCodeApi returns null', async () => {
     postalCodeApi.getAddress.mockResolvedValueOnce(null);
 
-    const promise = sut(input);
+    const result = await sut(input);
 
-    await expect(promise).rejects.toThrow(new InvalidAddressError());
+    expect(result).toEqual(new InvalidAddressError());
   });
 
   it('Should call SaveOrderRespository with correct input', async () => {

@@ -34,15 +34,12 @@ export class CreateOrderController extends Controller {
     super();
   }
 
-  async perform(httpRequest: HttpRequest):Promise<HttpResponse<Model> | any> {
-    try {
-      const result = await this.createOrder(httpRequest);
-      return ok(result);
-    } catch (error) {
-      if (error instanceof Error) {
-        return badRequest(error);
-      }
+  async perform(httpRequest: HttpRequest):Promise<HttpResponse<Model>> {
+    const result = await this.createOrder(httpRequest);
+    if (result instanceof Error) {
+      return badRequest(result);
     }
+    return ok(result);
   }
 
   buildValidators({ userId, products, contact, address }: HttpRequest): Validator[] {
