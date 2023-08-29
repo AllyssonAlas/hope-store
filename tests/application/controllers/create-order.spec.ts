@@ -27,7 +27,14 @@ describe('CreateOrderController', () => {
   };
 
   beforeAll(() => {
-    createOrder = jest.fn();
+    createOrder = jest.fn().mockResolvedValue({
+      products: [
+        { id: 'any_product_id_1', quantity: 1 },
+        { id: 'any_product_id_2', quantity: 5 },
+      ],
+      status: 'pending',
+      value: 50,
+    });
     request = {
       userId: 'any_user_id',
       products: [
@@ -95,5 +102,21 @@ describe('CreateOrderController', () => {
     const response = await sut.handle(request);
 
     expect(response).toEqual({ data: new InvalidAddressError(), statusCode: 400 });
+  });
+
+  it('Should return 200 on success', async () => {
+    const response = await sut.handle(request);
+
+    expect(response).toEqual({
+      data: {
+        products: [
+          { id: 'any_product_id_1', quantity: 1 },
+          { id: 'any_product_id_2', quantity: 5 },
+        ],
+        status: 'pending',
+        value: 50,
+      },
+      statusCode: 200,
+    });
   });
 });
