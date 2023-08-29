@@ -4,6 +4,7 @@ import {
   RequiredArrayValidator,
   RequiredEmailValidator,
 } from '@/application/validation';
+import { InvalidAddressError } from '@/domain/errors';
 
 describe('CreateOrderController', () => {
   let sut: CreateOrderController;
@@ -86,5 +87,13 @@ describe('CreateOrderController', () => {
       },
     });
     expect(createOrder).toHaveBeenCalledTimes(1);
+  });
+
+  it('Should return 400 if CreateOrder throws an error', async () => {
+    createOrder.mockRejectedValueOnce(new InvalidAddressError());
+
+    const response = await sut.handle(request);
+
+    expect(response).toEqual({ data: new InvalidAddressError(), statusCode: 400 });
   });
 });
