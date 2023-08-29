@@ -1,3 +1,5 @@
+import { CreateOrder } from '@/domain/usecases';
+import { Controller } from '@/application/controllers';
 import { ValidationBuilder as Builder, Validator } from '@/application/validation';
 
 type HttpRequest = {
@@ -17,7 +19,15 @@ type HttpRequest = {
   }
 }
 
-export class CreateOrderController {
+export class CreateOrderController extends Controller {
+  constructor(private readonly createOrder: CreateOrder) {
+    super();
+  }
+
+  async perform(httpRequest: HttpRequest):Promise<any> {
+    await this.createOrder(httpRequest);
+  }
+
   buildValidators({ userId, products, contact, address }: HttpRequest): Validator[] {
     const { number, street, neighborhood, city, state, postalCode } = address;
     return [
