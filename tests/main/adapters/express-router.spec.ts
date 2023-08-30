@@ -13,7 +13,7 @@ describe('ExpressRouter', () => {
   let controller: MockProxy<Controller>;
 
   beforeAll(() => {
-    req = getMockReq({ body: { any: 'any' } });
+    req = getMockReq({ body: { anyBody: 'any' }, locals: { anyLocals: 'any_locals' } });
     res = getMockRes().res;
     controller = mock();
     controller.handle.mockResolvedValue({
@@ -29,7 +29,7 @@ describe('ExpressRouter', () => {
   it('Should call handle with correct request', async () => {
     await sut(req, res, next);
 
-    expect(controller.handle).toHaveBeenCalledWith({ any: 'any' });
+    expect(controller.handle).toHaveBeenCalledWith({ anyBody: 'any', anyLocals: 'any_locals' });
     expect(controller.handle).toHaveBeenCalledTimes(1);
   });
 
