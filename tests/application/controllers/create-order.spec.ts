@@ -1,4 +1,4 @@
-import { CreateOrderController } from '@/application/controllers';
+import { CreateOrderController, Controller } from '@/application/controllers';
 import {
   RequiredStringValidator,
   RequiredArrayValidator,
@@ -55,6 +55,10 @@ describe('CreateOrderController', () => {
 
   beforeEach(() => {
     sut = new CreateOrderController(createOrder);
+  });
+
+  it('Should extend controller', () => {
+    expect(sut).toBeInstanceOf(Controller);
   });
 
   it('Should build validators correctly', () => {
