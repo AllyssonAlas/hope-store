@@ -20,4 +20,10 @@ describe('Postal Code Api Integration Tests', () => {
       street: 'Rua Sérgio Gregório',
     });
   });
+
+  it('Should return the correct null when postal code is invalid', async () => {
+    const address = await sut.getAddress({ postalCode: '00000000' });
+
+    expect(address).toBeNull();
+  });
 });
