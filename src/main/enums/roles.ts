@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 export enum roles {
   admin,
-  costumer,
+  customer,
 };
 
 export const rolesList = Object.keys(roles).filter(key => isNaN(Number(key)));
