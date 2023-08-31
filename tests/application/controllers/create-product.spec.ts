@@ -7,7 +7,7 @@ import {
   RequiredIntegerValidator,
 } from '@/application/validation';
 
-describe('CreateUserController', () => {
+describe('CreateProductController', () => {
   let sut: CreateProductController;
   let createProduct: jest.Mock;
   let request: {

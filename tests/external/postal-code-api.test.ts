@@ -9,7 +9,7 @@ describe('Postal Code Api Integration Tests', () => {
     sut = new PostalCodeApi(axiosClient);
   });
 
-  it('Should return the correct address when postal code is valid', async () => {
+  it('Should return the correct address if postal code is valid', async () => {
     const address = await sut.getAddress({ postalCode: '11722170' });
 
     expect(address).toEqual({
@@ -21,7 +21,7 @@ describe('Postal Code Api Integration Tests', () => {
     });
   });
 
-  it('Should return the correct null when postal code is invalid', async () => {
+  it('Should return the correct null if postal code is invalid', async () => {
     const address = await sut.getAddress({ postalCode: '00000000' });
 
     expect(address).toBeNull();

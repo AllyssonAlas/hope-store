@@ -20,7 +20,7 @@ describe('PgRoleRepository', () => {
   });
 
   describe('load', () => {
-    it('Should return an role if name exists', async () => {
+    it('Should return a role if name exists', async () => {
       await prisma.role.create({
         data: {
           name: 'any_role_name',
@@ -45,7 +45,7 @@ describe('PgRoleRepository', () => {
       ]);
     });
 
-    it('Should return an role with only belonging permissions', async () => {
+    it('Should return a role with only its belonging permissions', async () => {
       await prisma.role.create({
         data: {
           name: 'any_role_name_1',

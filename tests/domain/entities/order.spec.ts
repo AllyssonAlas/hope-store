@@ -113,9 +113,9 @@ describe('Order', () => {
   });
 
   it('Should return a product if amount requested is higher than stored', () => {
-    const invalidRequest = [{ id: 'any_product_id_1', quantity: 100 }];
+    const unavailableProduct = [{ id: 'any_product_id_1', quantity: 100 }];
 
-    const sut = new Order({ ...orderData, products: invalidRequest }).findUnavailableAmount(products);
+    const sut = new Order({ ...orderData, products: unavailableProduct }).findUnavailableAmount(products);
 
     expect(sut).toMatchObject({ id: 'any_product_id_1', quantity: 99 });
   });
@@ -127,9 +127,9 @@ describe('Order', () => {
   });
 
   it('Should return an invalid product id not found inside products list', () => {
-    const unavailableRequest = [{ id: 'any_product_id_3', quantity: 1 }];
+    const invalidProduct = [{ id: 'any_product_id_3', quantity: 1 }];
 
-    const sut = new Order({ ...orderData, products: unavailableRequest }).findInvalidProductId(products);
+    const sut = new Order({ ...orderData, products: invalidProduct }).findInvalidProductId(products);
 
     expect(sut).toBe('any_product_id_3');
   });

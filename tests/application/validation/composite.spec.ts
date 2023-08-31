@@ -21,7 +21,7 @@ describe('ValidationComposite', () => {
     sut = new ValidationComposite(validators);
   });
 
-  it('Should return undefined if all Valitadors return undefined', () => {
+  it('Should return undefined if all Validators return undefined', () => {
     const error = sut.validate();
 
     expect(error).toBeUndefined();

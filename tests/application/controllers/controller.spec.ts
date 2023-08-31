@@ -16,7 +16,7 @@ class ControllerStub extends Controller {
   }
 }
 
-describe('ControllerStub', () => {
+describe('Controller', () => {
   let sut: ControllerStub;
 
   beforeEach(() => {
@@ -45,7 +45,7 @@ describe('ControllerStub', () => {
     expect(response).toEqual({ data: new ServerError(error), statusCode: 500 });
   });
 
-  it('Should return 500 if undefined error if handle throws undefined', async () => {
+  it('Should return 500 if handle throws undefined error', async () => {
     jest.spyOn(sut, 'perform').mockRejectedValueOnce('non_error_object');
 
     const response = await sut.handle('any_value');

@@ -19,7 +19,7 @@ export const mockAuthorizationToken = async (permission: string): Promise<string
 
   const user = await prisma.user.create({
     data: {
-      name: 'any_role_name',
+      name: 'any_user_name',
       email: 'any_email@email.com',
       password: 'any_password',
       role: 'any_role_name',
