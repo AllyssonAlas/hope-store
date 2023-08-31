@@ -72,5 +72,39 @@ describe('Order Routes', () => {
       expect(body.status).toBe('pending');
       expect(body.value).toBe(50);
     });
+
+    it('Should return 400 wit correct error', async () => {
+      getAddressSpy.mockReturnValueOnce({
+        postalCode: 'any_postal_code',
+        city: 'any_city',
+        neighborhood: 'any_neighborhood',
+        street: 'any_street',
+      });
+
+      const authorization = await mockAuthorizationToken('create_order');
+
+      const { body, status } = await request(app)
+        .post('/api/order/create')
+        .set('authorization', authorization)
+        .send({
+          products: [
+            { id: 'any_product_id_1', quantity: 1 },
+          ],
+          contact: 'any_contact_@gmail.com',
+          address: {
+            number: 'any_number',
+            street: 'any_street',
+            neighborhood: 'any_neighborhood',
+            city: 'any_city',
+            postalCode: 'any_postal_code',
+            state: 'any_state',
+          },
+        });
+
+      expect(status).toBe(400);
+      expect(body).toEqual({
+        error: 'Error: product with id any_product_id_1 was not found',
+      });
+    });
   });
 });
